@@ -18,6 +18,7 @@ public class Player extends Objekt implements Collidable {
 
     private double lastDX = 1;
     private double lastDY = 0;
+	long lastime;
 
     private RImage imageNorm;
     private RImage imageFlipped;
@@ -26,6 +27,7 @@ public class Player extends Objekt implements Collidable {
 
     public Player(double x, double y, double vert, Color color){
         super(x, y, vert, color);
+		lastime = System.currentTimeMillis();
     }
 
     public Player(double x, double y, double vert, Color color, String imageName){
@@ -45,7 +47,9 @@ public class Player extends Objekt implements Collidable {
 
     @Override
     public void tick() {
-
+        System.out.println("fps: "+ 1.0/((System.currentTimeMillis()-lastime)/1000.0));
+        lastime = System.currentTimeMillis();
+	
         double dx = 0;
         double dy = 0;
         if(Screen.getInstance().isPressed("W")){

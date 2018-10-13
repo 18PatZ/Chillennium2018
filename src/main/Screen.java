@@ -57,6 +57,9 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
         objekts.add(new Player(2, 2, 0, Color.CADETBLUE, "troll.png", 0.5, 0.5));
         for(int i = 0; i < 10; i++)
             objekts.add(new StaticObject(4, 5 + i * 2, 0, "fruit_holder.png", 400, 3, 1));
+		for (int i = 0; i < 15; i++) 
+            objekts.add(new Passive(1,1,0,Color.GREEN, "person.png"));
+        
     }
 
     public boolean isPressed(String str){
