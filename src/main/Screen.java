@@ -67,7 +67,22 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
         stage.setWidth(width);
         stage.setHeight(height);
         stage.setTitle("main.Screen");
-
+       
+        //make resizing work:
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            width = (int)stage.getWidth();
+        });
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            height = (int)stage.getHeight();
+        });
+        stage.maximizedProperty().addListener((obs, oldVal, newVal) -> {
+            if(stage.isMaximized() == false){
+                stage.setWidth(dim.getWidth()*2/3);
+                stage.setHeight(dim.getHeight()*2/3);
+            }
+    });
+        
+        
         stage.show();
 
         scene.setOnKeyPressed(this);                                // Register oneself as the key press listener
