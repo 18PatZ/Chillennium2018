@@ -107,11 +107,11 @@ public class Util {
         return getPointOnScreen(point.x, point.y, point.z);
     }
 
-    public static boolean canMoveTo(double nx, double ny){
+    public static boolean canMoveTo(Objekt obj, double nx, double ny){
         if(!LevelManager.getInstance().getCurrentLevel().getHitbox().isInside(nx, ny)) return false;
 
         for (Objekt objekt : Screen.getInstance().getObjekts())
-            if (objekt instanceof Collidable && ((Collidable) objekt).getHitbox() != null &&
+            if (!obj.equals(objekt) && objekt instanceof Collidable && ((Collidable) objekt).getHitbox() != null &&
                     ((Collidable) objekt).getHitbox().isInside(nx, ny))
                 return false;
 

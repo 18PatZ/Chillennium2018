@@ -1,6 +1,7 @@
 package object;
 
 import collision.Collidable;
+import collision.Hitbox;
 import geometry.Point2D;
 import geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -10,7 +11,7 @@ import util.Cooldown;
 import util.RImage;
 import util.Util;
 
-public class Player extends Objekt {
+public class Player extends Objekt implements Collidable {
 
     private Cooldown inputCool = new Cooldown();
     private int jumpTick = -1;
@@ -21,6 +22,8 @@ public class Player extends Objekt {
     private RImage imageNorm;
     private RImage imageFlipped;
 
+    private Hitbox hitbox;
+
     public Player(double x, double y, double vert, Color color){
         super(x, y, vert, color);
     }
@@ -30,6 +33,12 @@ public class Player extends Objekt {
 
         imageNorm = image;
         imageFlipped = new RImage("troll_flipped.png", 50);
+    }
+
+    public Player(double x, double y, double vert, Color color, String imageName, double xLen, double yWidth){
+        this(x, y, vert, color, imageName);
+
+        hitbox = new Hitbox(x, y, xLen, yWidth);
     }
 
     int jumpTime = 40;
@@ -87,16 +96,16 @@ public class Player extends Objekt {
             double nx = getX() + lastDX / 15.0 * speed;
             double ny = getY() + lastDY / 15.0 * speed;
 
-            if(Util.canMoveTo(nx, ny)) {
+            if(Util.canMoveTo(this, nx, ny)) {
                 setX(nx);
                 setY(ny);
             }
         }
 
         if(Screen.getInstance().isPressed("T") && inputCool.expired("T", 0.05)){
-            Projectile proj = new Projectile(getX(), getY(), getVertical(), Color.GOLDENROD, 1);
-            proj.setVelX(0.3 * lastDX);
-            proj.setVelY(0.3 * lastDY);
+            Projectile proj = new Projectile(getX(), getY(), getVertical(), Color.INDIANRED, 15);
+            proj.setVelX(0.4 * lastDX);
+            proj.setVelY(0.4 * lastDY);
             Screen.getInstance().getAddQueue().add(proj);
         }
     }
@@ -122,5 +131,10 @@ public class Player extends Objekt {
             targetOffset.y = offset.y + up;
         else if (down > 0)
             targetOffset.y = offset.y - down;
+    }
+
+    @Override
+    public Hitbox getHitbox() {
+        return hitbox;
     }
 }

@@ -4,6 +4,7 @@ import javafx.scene.paint.Color;
 import lombok.Getter;
 import lombok.Setter;
 import main.Screen;
+import util.Util;
 
 @Getter @Setter
 public class Projectile extends Objekt {
@@ -21,8 +22,18 @@ public class Projectile extends Objekt {
 
     @Override
     public void tick() {
-        setX(getX() + velX);
-        setY(getY() + velY);
+
+        double nx = getX() + velX;
+        double ny = getY() + velY;
+
+        if(Util.canMoveTo(this, nx, ny)) {
+            setX(nx);
+            setY(ny);
+        }
+        else {
+            velX *= -1;
+            velY *= -1;
+        }
 
         setVertical(0.6 * (1 - (System.currentTimeMillis() - start) / life) * Math.sin((System.currentTimeMillis() - start) * Math.PI * 2 / 180));
 

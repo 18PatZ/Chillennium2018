@@ -12,6 +12,13 @@ public class POPair implements Comparable<POPair> {
 
     @Override
     public int compareTo(POPair o) {
-        return Double.compare(screenPoint.z, o.screenPoint.z);
+        double x = o.object.center.x - object.center.x;
+        double y = object.center.z - o.object.center.z;
+
+        if(x >= 0 || y >= 0)
+            return 1;
+        return -1;
+//        return Double.compare(- object.center.x + object.center.z, - o.object.center.x + o.object.center.z);
+//        return Double.compare(screenPoint.z, o.screenPoint.z);
     }
 }

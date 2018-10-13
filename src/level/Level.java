@@ -7,7 +7,7 @@ public class Level {
 
     @Getter private Hitbox hitbox;
     public Level(){
-        hitbox = Hitbox.builder().x(-5).y(5).width(10).length(10).build();
+        hitbox = Hitbox.builder().x(-9).y(16).width(19).length(16).build();
     }
 
 }

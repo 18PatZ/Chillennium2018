@@ -25,4 +25,13 @@ public class Point3D extends Point2D {
         return "(" + x + ", " + y + ", " + z + ")";
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return x == ((Point3D) obj).x && y == ((Point3D) obj).y && z == ((Point3D) obj).z;
+    }
+
+    @Override
+    public int hashCode() {
+        return -1;
+    }
 }
