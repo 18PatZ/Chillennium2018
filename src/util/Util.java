@@ -88,9 +88,9 @@ public class Util {
                 {point[2]},
         };
 
-        double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(45), 0), points);
+        double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(Screen.getInstance().getYaw()), 0), points);
 
-        double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(30), 0, 0),
+        double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(Screen.getInstance().getPitch()), 0, 0),
                 Util.translate(rot, 0, 0, 0));
 
         double[] p = Util.getDisplayed(fin)[0];

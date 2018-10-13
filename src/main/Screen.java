@@ -14,6 +14,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import lombok.Getter;
+import object.Cube;
 import object.Objekt;
 import object.Player;
 import object.StaticObject;
@@ -43,6 +44,8 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
     public void set(){
         objekts.add(new StaticObject(-4, -4, 0, "cow.jpg", 200));
+//        objekts.add(new Cube(2, 0, 0, Color.GREENYELLOW));
+        objekts.add(new StaticObject(2, 0, 0, "cubeT.png", 156, 1, 1));
         objekts.add(new Player(2, 2, 0, Color.CADETBLUE, "troll.png"));
     }
 
@@ -66,8 +69,8 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
         stage.setScene(scene);
         stage.setWidth(width);
         stage.setHeight(height);
-        stage.setTitle("main.Screen");
-       
+        stage.setTitle("Chillennium 2018");
+
         //make resizing work:
         stage.widthProperty().addListener((obs, oldVal, newVal) -> {
             width = (int)stage.getWidth();
@@ -80,9 +83,9 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                 stage.setWidth(dim.getWidth()*2/3);
                 stage.setHeight(dim.getHeight()*2/3);
             }
-    });
-        
-        
+        });
+
+
         stage.show();
 
         scene.setOnKeyPressed(this);                                // Register oneself as the key press listener
@@ -112,9 +115,9 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                             {i, i},
                     };
 
-                    double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(45), 0), points);
+                    double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(yaw), 0), points);
 
-                    double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(30), 0, 0),
+                    double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(pitch), 0, 0),
                             Util.translate(rot, 0, 0, 0));
 
                     fin = Util.getDisplayed(fin);
@@ -132,9 +135,9 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                             {i, i},
                     };
 
-                    double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(135), 0), points);
+                    double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(yaw + 90), 0), points);
 
-                    double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(30), 0, 0),
+                    double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(pitch), 0, 0),
                             Util.translate(rot, 0, 0, 0));
 
                     fin = Util.getDisplayed(fin);
@@ -213,6 +216,17 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                 double damp = 7.0;
                 offset.x += (targetOffset.x - offset.x) / damp;
                 offset.y += (targetOffset.y - offset.y) / damp;
+
+                double sp = 360.0 / 240;
+                if(isPressed("LEFT"))
+                    yaw += sp;
+                if(isPressed("RIGHT"))
+                    yaw -= sp;
+                if(isPressed("UP"))
+                    pitch += sp;
+                if(isPressed("DOWN"))
+                    pitch -= sp;
+
             }
 
         }.start();
@@ -223,16 +237,19 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
         return d;
     }
 
-    private Line makeLine(double[] p1, double[] p2, Color color){
+    private double yaw = 45;
+    private double pitch = 30;
+
+    public Line makeLine(double[] p1, double[] p2, Color color){
         double[][] points = new double[][]{
                 {p1[0], p2[0]},
                 {p1[1], p2[1]},
                 {p1[2], p2[2]},
         };
 
-        double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(45), 0), points);
+        double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(yaw), 0), points);
 
-        double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(30), 0, 0),
+        double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(pitch), 0, 0),
                 Util.translate(rot, 0, 0, 0));
 
         fin = Util.getDisplayed(fin);

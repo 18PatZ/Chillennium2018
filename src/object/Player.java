@@ -1,15 +1,26 @@
 package object;
 
+import collision.Collidable;
 import geometry.Point2D;
 import geometry.Point3D;
 import javafx.scene.paint.Color;
+import level.Level;
 import main.Screen;
 import util.Cooldown;
+import util.RImage;
 
 public class Player extends Objekt {
 
     private Cooldown inputCool = new Cooldown();
     private int jumpTick = -1;
+
+    private double lastDX = 1;
+    private double lastDY = 0;
+
+    private RImage imageNorm;
+    private RImage imageFlipped;
+
+    private Level level;
 
     public Player(double x, double y, double vert, Color color){
         super(x, y, vert, color);
@@ -17,6 +28,11 @@ public class Player extends Objekt {
 
     public Player(double x, double y, double vert, Color color, String imageName){
         super(x, y, vert, color, imageName);
+
+        imageNorm = image;
+        imageFlipped = new RImage("troll_flipped.png", 50);
+
+        level = new Level();
     }
 
     int jumpTime = 40;
@@ -37,10 +53,14 @@ public class Player extends Objekt {
         if(Screen.getInstance().isPressed("A")){
             dx += -1;
             dy += -1;
+
+            image = imageFlipped;
         }
         if(Screen.getInstance().isPressed("D")){
             dx += 1;
             dy += 1;
+
+            image = imageNorm;
         }
 
         if(Screen.getInstance().isPressed("SPACE") && inputCool.expired("SPACE", jumpTime / 60.0))
@@ -64,17 +84,35 @@ public class Player extends Objekt {
             speed *= 2.5;
 
         if(mag != 0) {
-            setX(getX() + dx / mag / 15.0 * speed);
-            setY(getY() + dy / mag / 15.0 * speed);
+            lastDX = dx / mag;
+            lastDY = dy / mag;
+
+            double nx = getX() + lastDX / 15.0 * speed;
+            double ny = getY() + lastDY / 15.0 * speed;
+
+            if(canMoveTo(nx, ny)) {
+                setX(nx);
+                setY(ny);
+            }
         }
 
-        if(Screen.getInstance().isPressed("T") && inputCool.expired("T", 0.01)){
+        if(Screen.getInstance().isPressed("T") && inputCool.expired("T", 0.05)){
             Projectile proj = new Projectile(getX(), getY(), getVertical(), Color.GOLDENROD, 1);
-            proj.setVelX(0.3);
-            proj.setVelY(0);
+            proj.setVelX(0.3 * lastDX);
+            proj.setVelY(0.3 * lastDY);
             Screen.getInstance().getAddQueue().add(proj);
         }
+    }
 
+    private boolean canMoveTo(double nx, double ny){
+        if(!level.getHitbox().isInside(nx, ny)) return false;
+
+        for (Objekt objekt : Screen.getInstance().getObjekts())
+            if (objekt instanceof Collidable && ((Collidable) objekt).getHitbox() != null &&
+                    ((Collidable) objekt).getHitbox().isInside(nx, ny))
+                return false;
+
+        return true;
     }
 
     @Override
