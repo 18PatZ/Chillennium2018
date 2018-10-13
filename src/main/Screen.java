@@ -294,11 +294,11 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                 if(isPressed("DOWN"))
                     pitch -= sp;
 
-                if(tick % 360 <= 60)
-                    yaw += 360.0 / 60.0;
-
-                if(tick % 360 - 180 >= 0 && tick % 360 - 180 <= 60)
-                    pitch += 360.0 / 60.0;
+//                if(tick % 360 <= 60)
+//                    yaw += 360.0 / 60.0;
+//
+//                if(tick % 360 - 180 >= 0 && tick % 360 - 180 <= 60)
+//                    pitch += 360.0 / 60.0;
 
             }
 
