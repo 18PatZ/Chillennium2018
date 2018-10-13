@@ -1,7 +1,10 @@
 package util;
 
+import collision.Collidable;
 import geometry.Point3D;
+import level.LevelManager;
 import main.Screen;
+import object.Objekt;
 
 public class Util {
 
@@ -97,10 +100,21 @@ public class Util {
         double x = Screen.getWidth() / 2.0 + p[0] + Screen.getInstance().getOffset().x;
         double y = Screen.getHeight() / 2.0 - p[1] + Screen.getInstance().getOffset().y;
 
-        return new Point3D(x, y, 0);
+        return new Point3D(x, y, p[2]);
     }
 
     public static Point3D getPointOnScreen(Point3D point){
         return getPointOnScreen(point.x, point.y, point.z);
+    }
+
+    public static boolean canMoveTo(double nx, double ny){
+        if(!LevelManager.getInstance().getCurrentLevel().getHitbox().isInside(nx, ny)) return false;
+
+        for (Objekt objekt : Screen.getInstance().getObjekts())
+            if (objekt instanceof Collidable && ((Collidable) objekt).getHitbox() != null &&
+                    ((Collidable) objekt).getHitbox().isInside(nx, ny))
+                return false;
+
+        return true;
     }
 }

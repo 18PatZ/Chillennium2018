@@ -13,15 +13,18 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import level.LevelManager;
 import lombok.Getter;
 import object.Cube;
 import object.Objekt;
 import object.Player;
 import object.StaticObject;
+import util.POPair;
 import util.Util;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -56,6 +59,8 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
     @Override
     public void start(Stage stage) {
 
+        new LevelManager();
+
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize(); // get screen size wrapper
         width = (int)dim.getWidth();
         height = (int)dim.getHeight();
@@ -79,7 +84,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
             height = (int)stage.getHeight();
         });
         stage.maximizedProperty().addListener((obs, oldVal, newVal) -> {
-            if(stage.isMaximized() == false){
+            if(!stage.isMaximized()){
                 stage.setWidth(dim.getWidth()*2/3);
                 stage.setHeight(dim.getHeight()*2/3);
             }
@@ -192,11 +197,48 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
                 });
 
+//                List<POPair> pairs = new ArrayList<>();
+//                List<POPair> players = new ArrayList<>();
+                List<Objekt> pairs = new ArrayList<>();
+                List<Objekt> players = new ArrayList<>();
+
                 objekts.forEach(o -> {
 
                     o.tick();
 
+//                    Point3D point = Util.getPointOnScreen(o.center);
+//                    (o instanceof Player ? players : pairs).add(POPair.builder().object(o).screenPoint(point).build());
+                    (o instanceof Player ? players : pairs).add(o);
+
+                });
+
+                while(players.size() > 0){
+                    Objekt player = players.remove(0);
+
+                    for(int j = 0; j <= pairs.size(); j++) {
+                        if(j == pairs.size()) {
+                            pairs.add(player);
+                            break;
+                        }
+                        else {
+                            Objekt p = pairs.get(j);
+                            if (!(p instanceof Player) && player.center.getX() > p.center.getX() && player.center.getZ() < p.center.getZ()) {
+                                pairs.add(j, player);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+//                Collections.sort(pairs);
+
+                pairs.forEach(p -> {
+
+//                    Objekt o = p.getObject();
+//                    Point3D point = p.getScreenPoint();
+                    Objekt o = p;
                     Point3D point = Util.getPointOnScreen(o.center);
+
                     context.setFill(o.color);
                     context.fillRoundRect(point.x - 10, point.y - 10, 20, 20, 20, 20);
 

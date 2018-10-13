@@ -8,6 +8,7 @@ import level.Level;
 import main.Screen;
 import util.Cooldown;
 import util.RImage;
+import util.Util;
 
 public class Player extends Objekt {
 
@@ -20,8 +21,6 @@ public class Player extends Objekt {
     private RImage imageNorm;
     private RImage imageFlipped;
 
-    private Level level;
-
     public Player(double x, double y, double vert, Color color){
         super(x, y, vert, color);
     }
@@ -31,8 +30,6 @@ public class Player extends Objekt {
 
         imageNorm = image;
         imageFlipped = new RImage("troll_flipped.png", 50);
-
-        level = new Level();
     }
 
     int jumpTime = 40;
@@ -90,7 +87,7 @@ public class Player extends Objekt {
             double nx = getX() + lastDX / 15.0 * speed;
             double ny = getY() + lastDY / 15.0 * speed;
 
-            if(canMoveTo(nx, ny)) {
+            if(Util.canMoveTo(nx, ny)) {
                 setX(nx);
                 setY(ny);
             }
@@ -102,17 +99,6 @@ public class Player extends Objekt {
             proj.setVelY(0.3 * lastDY);
             Screen.getInstance().getAddQueue().add(proj);
         }
-    }
-
-    private boolean canMoveTo(double nx, double ny){
-        if(!level.getHitbox().isInside(nx, ny)) return false;
-
-        for (Objekt objekt : Screen.getInstance().getObjekts())
-            if (objekt instanceof Collidable && ((Collidable) objekt).getHitbox() != null &&
-                    ((Collidable) objekt).getHitbox().isInside(nx, ny))
-                return false;
-
-        return true;
     }
 
     @Override
