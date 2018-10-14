@@ -26,7 +26,7 @@ import util.Util;
 public class Enemy extends NPC{
 
 
-
+    @Getter @Setter private int health;
     private double lastDX = 1;
     private double lastDY = 0;
     private double lastPX;
@@ -43,17 +43,16 @@ public class Enemy extends NPC{
     @Getter @Setter double walkSpeed=0.3;
     private Objekt victim= null;
     
-    
 
-    public Enemy(double x, double y, double vert, Color color){
-        super(x, y, vert, color);
+    public Enemy(double x, double y, double vert, Color color,int health){
+        super(x, y, vert, color,health);
         minWalkDist = 4;
         lastPX = getX();
         lastPY = getY();
     }
 
-    public Enemy(double x, double y, double vert, Color color, String imageName){
-        super(x, y, vert, color, imageName);
+    public Enemy(double x, double y, double vert, Color color, String imageName,int health){
+        super(x, y, vert, color, imageName,health);
         minWalkDist = 3;
         imageNorm = image;
         lastPX = getX();
@@ -101,7 +100,7 @@ public class Enemy extends NPC{
                 if(victim!=null && !(victim instanceof Player)){ //code for passives
                     
                     if(!(Screen.getInstance().getDestroyQueue().contains(victim))) { //not already killed
-                        Screen.getInstance().addToQue(new Enemy(victim.getX(), victim.getY(), 0, Color.RED, "liz.png"));
+                        Screen.getInstance().addToQue(new Enemy(victim.getX(), victim.getY(), 0, Color.RED, "liz.png",LevelManager.getInstance().getDefualtEnemyHealth()));
                         Screen.getInstance().markForDestruction(victim);
 
                         if(LevelManager.getInstance().getCurrentWave() != null) {

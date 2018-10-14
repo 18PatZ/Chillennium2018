@@ -79,7 +79,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                     add(new StaticObject(-8 - j * 2, 4 + 4 * i, 0, "shelves.png", 400, 0.6, 3));
 
         for (int i = 0; i < 15; i++)
-            add(new Passive(-4,1,0,Color.GREEN, "person2.png"));
+            add(new Passive(-4,1,0,Color.GREEN, "person2.png",100));
 
         add(new Player(2, 2, 0, Color.CADETBLUE, "troll.png", 0.5, 0.5));
 

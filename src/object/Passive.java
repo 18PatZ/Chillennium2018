@@ -25,15 +25,15 @@ public class Passive extends NPC {
     private double fov = 4; //when they get scared
     private double speed;
 
-    public Passive(double x, double y, double vert, Color color) {
-        super(x, y, vert, color);
+    public Passive(double x, double y, double vert, Color color,int health) {
+        super(x, y, vert, color,health);
         lastPX = x;
         lastPY = y;
         minWalkDist = 4;
     }
 
-    public Passive(double x, double y, double vert, Color color, String imageName) {
-        super(x, y, vert, color, imageName);
+    public Passive(double x, double y, double vert, Color color, String imageName,int health) {
+        super(x, y, vert, color, imageName,health);
         minWalkDist = 4;
     }
 

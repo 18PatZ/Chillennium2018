@@ -10,6 +10,9 @@ import object.Player;
 @Getter @Setter
 public class LevelManager {
 
+    @Getter @Setter private int defualtEnemyHealth = 100;
+    @Getter @Setter private int defaultPassiveHealth = 100;
+    @Getter @Setter private int playerHealth = 100;
     @Getter private static LevelManager instance;
     private Level currentLevel;
     private Wave currentWave;
@@ -55,7 +58,7 @@ public class LevelManager {
             nextWave();
 
         if(needSpawn > 0 && tick % 10 == 0){
-            Screen.getInstance().addToQue(new Passive(-4,1,0, Color.GREEN, "person2.png"));
+            Screen.getInstance().addToQue(new Passive(-4,1,0, Color.GREEN, "person2.png",defaultPassiveHealth));
             needSpawn--;
         }
 

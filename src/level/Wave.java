@@ -42,7 +42,7 @@ public class Wave {
 
         for (Passive passive : turn) {
             Screen.getInstance().markForDestruction(passive);
-            Enemy enemy = new Enemy(passive.getX(), passive.getY(), passive.getVertical(), passive.color, "liz.png");
+            Enemy enemy = new Enemy(passive.getX(), passive.getY(), passive.getVertical(), passive.color, "liz.png",LevelManager.getInstance().getDefualtEnemyHealth());
             Screen.getInstance().getAddQueue().add(enemy);
         }
 

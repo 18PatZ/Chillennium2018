@@ -14,7 +14,7 @@ import collision.Moveable;
  *
  * @author start
  */
-abstract class NPC extends Objekt  implements Moveable{
+abstract class NPC extends Living{
     double[] target = new double[2];
     double minWalkDist;
     private double lastDX;
@@ -22,12 +22,13 @@ abstract class NPC extends Objekt  implements Moveable{
     
     
 
-    public NPC(double x, double y, double vert, Color color) {
-        super(x, y, vert, color);
+    public NPC(double x, double y, double vert, Color color,int health) {
+        super(x, y, vert, color,health);
     }
-        public NPC(double x, double y, double vert, Color color, String imageName) {
-        super(x, y, vert, color);
-        this.image = new RImage(imageName, 50);
+    
+    public NPC(double x, double y, double vert, Color color, String imageName,int health) {
+    super(x, y, vert, color, health);
+    this.image = new RImage(imageName, 50);
     }
     
     @Override
