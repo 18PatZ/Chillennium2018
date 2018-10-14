@@ -6,24 +6,20 @@
 package object;
 
 import collision.Moveable;
-import geometry.Point2D;
-import geometry.Point3D;
-import java.util.ArrayList;
-import java.util.List;
 import javafx.scene.paint.Color;
 import lombok.Getter;
 import lombok.Setter;
 import main.Screen;
-import util.Cooldown;
 import util.RImage;
 import util.Util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- *
  * @author start
  */
-public class Enemy extends NPC{
-
+public class Enemy extends NPC {
 
 
     private double lastDX = 1;
@@ -35,22 +31,25 @@ public class Enemy extends NPC{
     private RImage imageFlipped;
     private double fov = 4;
     private boolean pursuing = false;
-    private boolean reached = true; 
+    private boolean reached = true;
     private double speed;
     private double threshold = 0.01;
-    @Getter @Setter double runSpeed=1.3;
-    @Getter @Setter double walkSpeed=0.3;
-    
-    
+    @Getter
+    @Setter
+    double runSpeed = 1.3;
+    @Getter
+    @Setter
+    double walkSpeed = 0.3;
 
-    public Enemy(double x, double y, double vert, Color color){
+
+    public Enemy(double x, double y, double vert, Color color) {
         super(x, y, vert, color);
         minWalkDist = 4;
         lastPX = getX();
         lastPY = getY();
     }
 
-    public Enemy(double x, double y, double vert, Color color, String imageName){
+    public Enemy(double x, double y, double vert, Color color, String imageName) {
         super(x, y, vert, color, imageName);
         minWalkDist = 3;
         imageNorm = image;
@@ -59,6 +58,7 @@ public class Enemy extends NPC{
         //imageFlipped = new RImage("troll_flipped.png", 50);
     }
 
+    private int tick = 0;
 
     @Override
     public void tick() { //change dy and dx based on ai engine
@@ -70,45 +70,45 @@ public class Enemy extends NPC{
         if (!pursuing) { //normal operating
             if (reached) {
                 findTarget();
-               // System.out.println("new target: " + target[0] + "," + target[1]);
-              //  System.out.println("position: " + getX() + "," + getY());
+                // System.out.println("new target: " + target[0] + "," + target[1]);
+                //  System.out.println("position: " + getX() + "," + getY());
                 reached = false;
-            } 
+            }
             speed = walkSpeed;//walking speed
-            }
-            if (Math.abs(target[0] - getX()) < threshold && Math.abs(target[1] - getY()) < threshold) {
-                reached = true;
-               // System.out.println("on target!");
-               //pause!
-            } else if (getX() - lastPX == 0 || getY() - lastPY == 0.0) {
-                reached = true; //not reached but time to find new place
-                //System.out.println("wall");
-            }
+        }
+        if (Math.abs(target[0] - getX()) < threshold && Math.abs(target[1] - getY()) < threshold) {
+            reached = true;
+            // System.out.println("on target!");
+            //pause!
+        } else if (getX() - lastPX == 0 || getY() - lastPY == 0.0) {
+            reached = true; //not reached but time to find new place
+            //System.out.println("wall");
+        }
 
 //
-//            
+//
+        if(!pursuing || tick % 5 == 0) {
             double[] go = runWhere();
-            if(!(go[0]==1000)&&!(go[1]==1000)){
-                System.out.println("pursuing");
-                pursuing=true;
+            if (!(go[0] == 1000) || !(go[1] == 1000)) {
+//                System.out.println("pursuing");
+                pursuing = true;
 //                //introducing some randomness
-                target[0] = (go)[0]-(Math.random()/10);
-                target[1] = (go)[1]+Math.random()/10;
+                target[0] = (go)[0] - (Math.random() / 10);
+                target[1] = (go)[1] + Math.random() / 10;
+            } else {
+                pursuing = false;
             }
-            else{
-                pursuing= false;
-            }
+        }
 //            
-        if(pursuing) {//scared
-           speed = runSpeed;//running speed
+        if (pursuing) {//scared
+            speed = runSpeed;//running speed
 //                //still scared?
-                    }
-                dx = -(getX() - target[0]);
-                dy = -(getY() - target[1]);
+        }
+        dx = -(getX() - target[0]);
+        dy = -(getY() - target[1]);
 
 
         double mag = Math.sqrt(dx * dx + dy * dy);
-
 
 
         if (mag != 0) {
@@ -125,42 +125,49 @@ public class Enemy extends NPC{
 //                setY(ny);
 //            }
             double[] pos = Util.calcCollision(this, getX(), getY(), lastDX / 15.0 * speed, lastDY / 15.0 * speed);
-            if(pos != null){
+            if (pos != null) {
                 setX(pos[0]);
                 setY(pos[1]);
-            }
-            else { //scared shouldn't mater here
+            } else { //scared shouldn't mater here
                 findTarget();
                 setX(getX() - lastDX / 15.0 * speed);
                 setY(getY() - lastDY / 15.0 * speed);
             }
         }
 
-    
+        tick++;
     }
 
-    
-    private double[] runWhere(){
-    int enemies  = 0;
 
-    double posx=1000,posy = 1000;
-    
-    //finding average location of all enemies within field of view:
-    List<Objekt> pairs = new ArrayList<>();
-                for(Moveable p1 : Screen.getInstance().getMoveables()){
-                    if(p1 instanceof Player || p1 instanceof Passive){
-                        Objekt victim = (Objekt)p1;
-                            if(Math.abs(victim.getX()-getX())<fov && Math.abs(victim.getY()-getY())<fov){
-                                  pursuing = true;
-                                  posx = victim.getX();
-                                  posy = victim.getY();
-                                //scared = true;
-                            }
-                        }
-                }    
-         
-        return new double[]{posx,posy};
-}
+    private double[] runWhere() {
+        int enemies = 0;
+
+        double posx = 1000, posy = 1000;
+        double dist = Double.MAX_VALUE;
+
+        for (Moveable p1 : Screen.getInstance().getMoveables()) {
+            if ((p1 instanceof Player && !((Player) p1).isWolf()) || p1 instanceof Passive) {
+                Objekt victim = (Objekt) p1;
+                double dx = Math.abs(victim.getX() - getX());
+                double dy = Math.abs(victim.getY() - getY());
+
+                if (dx < fov && dy < fov) {
+                    double d = dx * dx + dy * dy;
+                    if(d < dist) {
+                        dist = d;
+                        posx = victim.getX();
+                        posy = victim.getY();
+                    }
+                    //scared = true;
+                }
+            }
+        }
+
+        if(posx != 1000 || posy != 1000)
+            pursuing = true;
+
+        return new double[]{posx, posy};
+    }
 
 }
 

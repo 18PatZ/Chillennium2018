@@ -75,7 +75,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
             for(int j = 0; j < 2; j++)
                     add(new StaticObject(-8 - j * 2, 4 + 4 * i, 0, "shelves.png", 400, 0.6, 3));
 
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < 80; i++)
             add(new Passive(1,1,0,Color.GREEN, "person2.png"));
 
         add(new Player(2, 2, 0, Color.CADETBLUE, "troll.png", 0.5, 0.5));
@@ -365,7 +365,6 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
 // border image
     if(Player.getInstance().isWolf()){
-        if()
         if(borderTick<60){
             context.setGlobalAlpha(((double)borderTick)/60);
             context.drawImage(border, 0, 0,width,height);

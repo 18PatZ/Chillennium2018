@@ -179,7 +179,7 @@ public class Player extends Objekt implements Collidable, Moveable {
         else
             image = imgStand;
 
-        if(Screen.getInstance().isPressed("T") && inputCool.expired("T", 0.05)){
+        if(Screen.getInstance().isPressed("T") && inputCool.expired("T", 0.01)){
             Projectile proj = new Projectile(getX(), getY(), 0, getVertical(), Color.INDIANRED, 5);
             proj.setVelX(0.35 * lastDX);
             proj.setVelY(0.35 * lastDY);

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Wave {
 
-    private int numTurn = 5;
+    private int numTurn = 1;//5;
 
     public void start(){
 

@@ -5,39 +5,38 @@
  */
 package object;
 
+import collision.Moveable;
 import javafx.scene.paint.Color;
 import util.RImage;
 import util.Util;
-import collision.Moveable;
 
 /**
- *
  * @author start
  */
-abstract class NPC extends Objekt  implements Moveable{
+abstract class NPC extends Objekt implements Moveable {
     double[] target = new double[2];
     double minWalkDist;
     private double lastDX;
     private double lastDY;
-    
-    
+
 
     public NPC(double x, double y, double vert, Color color) {
         super(x, y, vert, color);
     }
-        public NPC(double x, double y, double vert, Color color, String imageName) {
+
+    public NPC(double x, double y, double vert, Color color, String imageName) {
         super(x, y, vert, color);
         this.image = new RImage(imageName, 50);
     }
-    
+
     @Override
     public abstract void tick();
-    
-        void findTarget() {
+
+    void findTarget() {
         double size = 10; //size of bounding box
         target[0] = (Math.random() * 2 * size - size);
         target[1] = (Math.random() * 2 * size - size); // random + or -
-        
+
         if (((target[0] - getX()) * (target[0] - getX()) + (target[1] - getY()) * (target[1] - getY()) < minWalkDist) ||
                 (!Util.canMoveTo(this, target[0], target[1]))) { //or out of bounds
             findTarget();
@@ -45,5 +44,5 @@ abstract class NPC extends Objekt  implements Moveable{
 
 
     }
-    
+
 }
