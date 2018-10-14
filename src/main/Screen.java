@@ -22,6 +22,7 @@ import lombok.Getter;
 import object.*;
 import util.POPair;
 import util.Util;
+import util.Sound;
 
 import java.awt.*;
 import java.io.File;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+
 
 @Getter
 public class Screen extends Application implements EventHandler<KeyEvent> {
@@ -51,6 +53,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
     private Image background;
     private Image border;//werewolf vigntte
+    private Sound sound;
 
     private int tick = 0;
     private int fps = 0;
@@ -81,6 +84,10 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
         add(new Player(2, 2, 0, Color.CADETBLUE, "troll.png", 0.5, 0.5));
 
         new Image(new File("images/liz.png").toURI().toString());
+        
+        sound = new Sound();
+        //playing sound
+        
     }
 
     private void add(Objekt obj){
@@ -365,7 +372,10 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
 // border image
     if(Player.getInstance().isWolf()){
-        if()
+        //sound
+        if(borderTick == 1){
+            sound.boom();
+        }
         if(borderTick<60){
             context.setGlobalAlpha(((double)borderTick)/60);
             context.drawImage(border, 0, 0,width,height);
