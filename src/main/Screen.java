@@ -55,20 +55,29 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
     private int fps = 0;
 
     public void set(){
-        add(new StaticObject(-4, -4, 0, "cow.jpg", 200));
-        add(new StaticObject(2, 4, 0, "cubeT.png", 156, 1, 1));
+        add(new StaticObject(-4.2, 0, 2, "cowS.png", 200));
+//        add(new StaticObject(2, 4, 0, "cubeT.png", 156, 1, 1));
 
         for(int i = 0; i < 10; i++)
             add(new StaticObject(4, 5 + i * 2, 0, "fruit_holder.png", 400, 3, 1));
 
-        for(int i = 0; i < 2; i++)
-            for(int j = 0; j < 3; j++)
-                add(new StaticObject(1 - j * 2, 11 + i * 4, 0, "veggie_holder.png", 400, 1, 3));
+
+        for(int i = 0; i < 3; i++) {
+            add(new StaticObject(1 - i * 2, 4, 0, "cashier.png", 200, 1, 1.4));
+            for (int j = 0; j < 2; j++)
+                add(new StaticObject(1 - i * 2, 11 + j * 4, 0, "veggie_holder.png", 400, 1, 3));
+        }
+
+        for(int i = 0; i < 4; i++)
+            for(int j = 0; j < 2; j++)
+                    add(new StaticObject(-8 - j * 2, 4 + 4 * i, 0, "shelves.png", 400, 0.6, 3));
 
         for (int i = 0; i < 15; i++)
-            add(new Passive(1,1,0,Color.GREEN, "person.png"));
+            add(new Passive(1,1,0,Color.GREEN, "person2.png"));
 
         add(new Player(2, 2, 0, Color.CADETBLUE, "troll.png", 0.5, 0.5));
+
+        new Image(new File("images/liz.png").toURI().toString());
     }
 
     private void add(Objekt obj){
@@ -128,6 +137,11 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
         set();
 
+//        Point3D pp = Util.getPointOnScreen(10, 0, 0);
+//        System.out.println(pp.getX() + " " + pp.getY() + " " + pp.getZ());
+//        ox = 1548.2506003549065 - pp.getX();
+//        oy = pp.getY() - 205;
+
         new AnimationTimer(){
 
             @Override
@@ -146,23 +160,20 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 //                    ox++;
 //                if(isPressed("Y"))
 //                    ox--;
+//                if(isPressed("O"))
+//                    oy++;
+//                if(isPressed("I"))
+//                    oy--;
                 if(isPressed("O")){
-                    //oy++;
                     ox = 111;
                     oy = -14;
                     targetOffset.x-=100;
                 }
-//                if(isPressed("I"))
-//                    oy--;
 //                System.out.println(ox + " " + oy);
                 context.drawImage(background, offset.x + ox, offset.y + oy, 1920 * 1.5, 1920/1.7320875438 * 1.5);
 
-                if(tick % 15 == 0)
+                if(tick % 5 == 0)
                     fps = (int) (1.0 / (System.currentTimeMillis() - lastTime) * 1000);
-
-                Screen.getInstance().getContext().setFill(Color.GRAY);
-                Screen.getInstance().getContext().setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 24));
-                Screen.getInstance().getContext().fillText("FPS: " + fps, 40, 40);
 
                 lastTime = System.currentTimeMillis();
 
@@ -170,7 +181,9 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
                 if(true) {
 
-                    for(int i = 0; i <= 40; i++){
+                    Color lCol = new Color(0.65, 0.65, 0.65, 1);
+
+                    for(int i = 1; i <= 40; i++){
 
                         double[][] points = new double[][]{
                                 {-20, 10},
@@ -186,11 +199,11 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                         fin = Util.getDisplayed(fin);
 
                         Line line = new Line(Point3D.fromArray(fin[0]), Point3D.fromArray(fin[1]));
-                        line.color = Color.GRAY;
+                        line.color = lCol;
                         lines.add(line);
                     }
 
-                    for(int i = -20; i <= 10; i++){
+                    for(int i = -20; i < 10; i++){
 
                         double[][] points = new double[][]{
                                 {-40, 0},
@@ -206,7 +219,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                         fin = Util.getDisplayed(fin);
 
                         Line line = new Line(Point3D.fromArray(fin[0]), Point3D.fromArray(fin[1]));
-                        line.color = Color.GRAY;
+                        line.color = lCol;
                         lines.add(line);
                     }
                 }
@@ -217,10 +230,11 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                 lines.add(makeLine(p(0, 0, 0), p(0, 0, 1), Color.GREEN));
 
                 Color col = Color.LIGHTGRAY;
-//                lines.add(makeLine(p(-9, 0, 0), p(10, 0, 0), col));
                 lines.add(makeLine(p(-9, 0, 16), p(10, 0, 16), col));
-//                lines.add(makeLine(p(10, 0, 0), p(10, 0, 16), col));
                 lines.add(makeLine(p(-9, 0, 0), p(-9, 0, 16), col));
+
+                lines.add(makeLine(p(-9, 0, 0), p(10, 0, 0), Color.rgb(90, 45, 15)));
+                lines.add(makeLine(p(10, 0, 0), p(10, 0, 16), Color.rgb(90, 45, 15)));
 
 //                lines.add(makeLine(p(-5, 0, -5), p(-5, 2, -5), Color.BLUE));
 //                lines.add(makeLine(p(-5, 0, 5), p(-5, 2, 5), Color.BLUE));
@@ -251,7 +265,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
                     double mag = Util.dist(p1, p1y, p2, p2y);
 
-                    context.fillRect(p1r[0], p1r[1] - 2, mag, 4);
+                    context.fillRect(p1r[0], p1r[1] - 2, mag, l.color.equals(Color.rgb(90, 45, 15)) ? 8 : 4);
 
                     context.restore();
 
@@ -300,12 +314,22 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                     context.setFill(o.color);
                     context.fillRoundRect(point.x - 10, point.y - 10, 20, 20, 20, 20);
 
-                    if(o.image != null)
-                        context.drawImage(o.image.getImage(), point.x - o.image.getWidth()/2, point.y - o.image.getHeight(), o.image.getWidth(), o.image.getHeight());
+                    if(o.image != null) {
+                        if(!o.flipped)
+                            context.drawImage(o.image.getImage(), point.x - o.image.getWidth() / 2, point.y - o.image.getHeight(), o.image.getWidth(), o.image.getHeight());
+                        else
+                            context.drawImage(o.image.getImage(), point.x + o.image.getWidth() / 2, point.y - o.image.getHeight(), -o.image.getWidth(), o.image.getHeight());
+                    }
 
                     o.postTick(point);
 
                 });
+
+                if(tick == 360)
+                    LevelManager.getInstance().nextWave();
+
+                if(tick >= 360)
+                    LevelManager.getInstance().getCurrentWave().tick();
 
                 objekts.removeAll(destroyQueue);
                 moveables.removeAll(destroyQueue);
@@ -333,6 +357,13 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 //
 //                if(tick % 360 - 180 >= 0 && tick % 360 - 180 <= 60)
 //                    pitch += 360.0 / 60.0;
+
+
+
+                Screen.getInstance().getContext().setFill(Color.GRAY);
+                Screen.getInstance().getContext().setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 24));
+                Screen.getInstance().getContext().fillText("FPS: " + fps, 40, 40);
+                Screen.getInstance().getContext().fillText("Wolf: " + Player.getInstance().isWolf(), 40, 60);
 
             }
 

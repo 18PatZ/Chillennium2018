@@ -9,6 +9,7 @@ public abstract class Objekt {
     public Point3D center;
     public Color color;
     public RImage image;
+    public boolean flipped = false;
 
     public Objekt(double x, double y, double vert, Color color){
         this.center = new Point3D(x, vert, y);

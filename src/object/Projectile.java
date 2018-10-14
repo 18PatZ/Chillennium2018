@@ -13,11 +13,13 @@ public class Projectile extends Objekt {
     private double velY;
     private long start;
     private double life;
+    private double init;
 
-    public Projectile(double x, double y, double vert, Color color, double life) {
+    public Projectile(double x, double y, double vert, double init, Color color, double life) {
         super(x, y, vert, color);
         start = System.currentTimeMillis();
         this.life = (life * 1000);
+        this.init = init;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class Projectile extends Objekt {
             velY *= -1;
         }
 
-        setVertical(0.6 * (1 - (System.currentTimeMillis() - start) / life) * Math.sin((System.currentTimeMillis() - start) * Math.PI * 2 / 180));
+        setVertical(init + 0.6 * (1 - (System.currentTimeMillis() - start) / life) * Math.sin((System.currentTimeMillis() - start) * Math.PI * 2 / 180));
 
         if(System.currentTimeMillis() >= start + life)
             Screen.getInstance().markForDestruction(this);
