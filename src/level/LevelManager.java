@@ -62,7 +62,7 @@ public class LevelManager {
             if(Math.random() < 0.25)
                 Screen.getInstance().addToQue(new Armed(-4,1,0,Color.RED, "person2.png", LevelManager.getInstance().getPlayeStartHealth()));
             else
-                Screen.getInstance().addToQue(new Passive(-4,1,0, Color.GREEN, "person2.png",defaultPassiveHealth));
+                Screen.getInstance().addToQue(new Passive(-4,1,0, Color.GREEN, "person2.png", defaultPassiveHealth));
             needSpawn--;
         }
 

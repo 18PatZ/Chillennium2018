@@ -2,7 +2,6 @@ package object;
 
 import collision.Moveable;
 import javafx.scene.paint.Color;
-import level.LevelManager;
 import lombok.Getter;
 import lombok.Setter;
 import main.Screen;
@@ -18,6 +17,7 @@ public class Projectile extends Objekt implements Moveable {
     private double init;
     protected double bounceHeight = 0.6;
     protected boolean killOnRebound = false;
+    private double damage = 10;
 
     public Projectile(double x, double y, double vert, double init, Color color, double life) {
         super(x, y, vert, color);
@@ -63,11 +63,11 @@ public class Projectile extends Objekt implements Moveable {
         for (Moveable moveable : Screen.getInstance().getMoveables()) {
             if(moveable instanceof Enemy){
                 Enemy e = (Enemy) moveable;
-                if(Math.abs(e.getX() - getX()) <= 0.1 && Math.abs(e.getY() - getY()) <= 0.1){
+                if(Math.abs(e.getX() - getX()) <= 0.2 && Math.abs(e.getY() - getY()) <= 0.2){
 //                    Screen.getInstance().markForDestruction(e);
 //                    if(LevelManager.getInstance().getCurrentWave() != null)
 //                        LevelManager.getInstance().getCurrentWave().decWolf();
-                    e.doDamage(25);
+                    e.doDamage(damage);
                 }
             }
         }

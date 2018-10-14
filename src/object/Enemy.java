@@ -6,8 +6,6 @@
 package object;
 
 import collision.Moveable;
-import java.util.ArrayList;
-import java.util.List;
 import javafx.scene.paint.Color;
 import level.LevelManager;
 import lombok.Getter;
@@ -21,17 +19,12 @@ import util.Util;
  */
 public class Enemy extends NPC {
 
-
-    @Getter
-    @Setter
-    private double health;
     private double lastDX = 1;
     private double lastDY = 0;
     private double lastPX;
     private double lastPY;
-    @Getter
-    @Setter
-    private double damageDone = 100.0/180;
+    @Getter @Setter private double damageDone = 100.0/180;
+    @Getter @Setter private double damageDonePlayer = 100.0/6000;
 
     private RImage imageNorm;
     private RImage imageFlipped;
@@ -39,7 +32,7 @@ public class Enemy extends NPC {
     private boolean pursuing = false;
     private boolean reached = true;
     private double speed;
-    private double threshold = 0.1;
+    private double threshold = 0.2;
     @Getter
     @Setter
     double runSpeed = 1.3;
@@ -47,10 +40,6 @@ public class Enemy extends NPC {
     @Setter
     double walkSpeed = 0.3;
     private Objekt victim = null;
-    private int animTick = 0;
-    
-    private List<RImage> walking = new ArrayList<>();
-
 
 
     public Enemy(double x, double y, double vert, Color color, int health) {
@@ -58,8 +47,6 @@ public class Enemy extends NPC {
         minWalkDist = 4;
         lastPX = getX();
         lastPY = getY();
-        walking.add(new RImage("wolfie1.png",80));
-        walking.add(new RImage("wolfie2.png",80));       
     }
 
     public Enemy(double x, double y, double vert, Color color, String imageName, int health) {
@@ -68,9 +55,6 @@ public class Enemy extends NPC {
         imageNorm = image;
         lastPX = getX();
         lastPY = getY();
-        Screen.getInstance().getSound().howl();
-        walking.add(new RImage("wolfie1.png",80));
-        walking.add(new RImage("wolfie2.png",80));    
         //imageFlipped = new RImage("troll_flipped.png", 50);
     }
 
@@ -82,11 +66,6 @@ public class Enemy extends NPC {
         double dx = 0;
         double dy = 0;
 
-        //image
-        animTick++;
-        image = walking.get((animTick / 10) % walking.size());
-        
-        
         if (!pursuing) { //normal operating
             if (reached) {
                 findTarget();
@@ -100,7 +79,7 @@ public class Enemy extends NPC {
         //chasing test
         victim = runWhere();
         if (victim != null) {
-            System.out.println("pursuing");
+//            System.out.println("pursuing");
             pursuing = true;
             target[0] = (victim.getX()) + (Math.random() / 10);
             target[1] = (victim.getY()) - (Math.random() / 10);
@@ -131,7 +110,7 @@ public class Enemy extends NPC {
                 ((Living) victim).doDamage(damageDone);
 
             } else if (victim instanceof Player) {//hurt player
-                ((Living) victim).doDamage(damageDone);
+                ((Living) victim).doDamage(damageDonePlayer);
             }
             victim = null; //if already killled
             pursuing = false;
@@ -185,9 +164,6 @@ public class Enemy extends NPC {
 
 
     private Objekt runWhere() {
-        int enemies = 0;
-
-        double posx = 1000, posy = 1000;
         double dist = Double.MAX_VALUE;
         Objekt targ = null;
 
@@ -210,9 +186,6 @@ public class Enemy extends NPC {
             }
         }
 
-        if (posx != 1000 || posy != 1000)
-            pursuing = true;
-
         return targ;
     }
 
@@ -221,10 +194,6 @@ public class Enemy extends NPC {
         Screen.getInstance().markForDestruction(this);
         if(LevelManager.getInstance().getCurrentWave() != null)
             LevelManager.getInstance().getCurrentWave().decWolf();
-    }
-        @Override
-    public void onHit(){
-        Screen.getInstance().getSound().howl();
     }
 }
 
