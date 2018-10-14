@@ -1,5 +1,6 @@
 package object;
 
+import collision.Moveable;
 import javafx.scene.paint.Color;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +8,7 @@ import main.Screen;
 import util.Util;
 
 @Getter @Setter
-public class Projectile extends Objekt {
+public class Projectile extends Objekt implements Moveable {
 
     private double velX;
     private double velY;

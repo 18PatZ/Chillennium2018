@@ -17,6 +17,7 @@ import util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+import util.Sound;
 
 public class Player extends Objekt implements Collidable, Moveable {
 
@@ -28,13 +29,14 @@ public class Player extends Objekt implements Collidable, Moveable {
 
     private Hitbox hitbox;
 
-    private List<RImage> images = new ArrayList<>();
+    private List<RImage> walking = new ArrayList<>();
+    private List<RImage> walkingWolf = new ArrayList<>();
     private RImage imgStand;
+    private RImage standingWolf;
 
     @Getter private static Player instance;
 
-    @Getter @Setter
-    private boolean isWolf = false;
+    @Getter @Setter private boolean isWolf = false;
     @Getter @Setter private double aiStrength = 0.82;
 
     public Player(double x, double y, double vert, Color color){
@@ -45,8 +47,12 @@ public class Player extends Objekt implements Collidable, Moveable {
         super(x, y, vert, color, imageName);
 
         for(int i = 1; i <= 4; i++)
-            images.add(new RImage("luna" + i + ".png", 80));
+            walking.add(new RImage("luna" + i + ".png", 80));
+        
+        walkingWolf.add(new RImage("wolfie1.png",80));
+        walkingWolf.add(new RImage("wolfie2.png",80));
         imgStand = new RImage("luna_standing.png", 80);
+        standingWolf = new RImage("wolfie1.png",80);
 
         image = imgStand;
 
@@ -124,7 +130,9 @@ public class Player extends Objekt implements Collidable, Moveable {
                 }
 
                 if(magg <= 0.1) {
-                    Screen.getInstance().markForDestruction(target); // KILLED
+                   // target
+                    Screen.getInstance().markForDestruction(target); // BITE
+                    Screen.getInstance().addToQue(new Enemy(target.getX(),target.getY(),0,Color.RED,"liz.png"));
                     target = null;
                 }
             }
@@ -173,12 +181,19 @@ public class Player extends Objekt implements Collidable, Moveable {
 //            }
 
             animTick += (int) speed;
-
-            image = images.get((animTick / 10) % images.size());
+            if(isWolf){
+                image = walkingWolf.get((animTick / 10) % walkingWolf.size());
+            }
+            else{
+                image = walking.get((animTick / 10) % walking.size());
+            }
         }
         else
-            image = imgStand;
-
+            if(isWolf)
+                image = standingWolf;
+            else
+                image = imgStand;
+        
         if(Screen.getInstance().isPressed("T") && inputCool.expired("T", 0.05)){
             Projectile proj = new Projectile(getX(), getY(), 0, getVertical(), Color.INDIANRED, 5);
             proj.setVelX(0.35 * lastDX);
@@ -190,11 +205,12 @@ public class Player extends Objekt implements Collidable, Moveable {
     }
 
     public void turnToWolf(){
-        setWolf(true);
+        isWolf = true;
     }
 
     public void revertToHuman(){
-        setWolf(false);
+        isWolf = false;
+        
     }
 
     @Override

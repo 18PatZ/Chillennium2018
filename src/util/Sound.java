@@ -17,7 +17,10 @@ public class Sound
 {
     private boolean running = false;
     private Thread thread;
+    private boolean playSong = false;
+    Media boom = new Media(new File("sound/boom.mp3").toURI().toString());
 
+    
     public Sound()
     {
         
@@ -26,16 +29,17 @@ public class Sound
 
 
     //
-    private boolean playSong = false;
-    Media boom = new Media(new File("sound/boom.mp3").toURI().toString());
-    MediaPlayer Boom = new MediaPlayer(boom);
+
+
 
     
 
   
     public void boom(){
+        MediaPlayer Boom = new MediaPlayer(boom);
         Boom.play();
     }
+
 //    public void boom(){
 //        InputStream sound;
 //        try

@@ -148,7 +148,7 @@ public class Enemy extends NPC{
     //finding average location of all enemies within field of view:
     List<Objekt> pairs = new ArrayList<>();
                 for(Moveable p1 : Screen.getInstance().getMoveables()){
-                    if(p1 instanceof Player || p1 instanceof Passive){
+                    if((p1 instanceof Player )|| p1 instanceof Passive){
                         Objekt victim = (Objekt)p1;
                             if(Math.abs(victim.getX()-getX())<fov && Math.abs(victim.getY()-getY())<fov){
                                   pursuing = true;

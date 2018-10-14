@@ -58,7 +58,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
     private int tick = 0;
     private int fps = 0;
     private int borderTick= 0;
-    private boolean wolfLast = false;
+
 
     public void set(){
         add(new StaticObject(-4.2, 0, 2, "cowS.png", 200));
@@ -380,11 +380,13 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
             context.setGlobalAlpha(((double)borderTick)/60);
             context.drawImage(border, 0, 0,width,height);
             borderTick++;
+            System.out.println("border: "+borderTick);
+                        context.setGlobalAlpha(1);
         }
         else{
             context.drawImage(border, 0, 0,width,height);
         }
-        wolfLast = true;
+
     }
     if(!Player.getInstance().isWolf()){
         if(borderTick>1){
@@ -437,7 +439,9 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
     public void markForDestruction(Objekt obj){
         destroyQueue.add(obj);
     }
-
+    public void addToQue(Objekt obj){
+       addQueue.add(obj);
+    }
     /**
      * Listens for escape key press and exits
      */
