@@ -12,7 +12,7 @@ public class LevelManager {
 
     @Getter @Setter private int defualtEnemyHealth = 100;
     @Getter @Setter private int defaultPassiveHealth = 100;
-    @Getter @Setter private int playerHealth = 100;
+    @Getter @Setter private int playeStartHealth = 100;
     @Getter private static LevelManager instance;
     private Level currentLevel;
     private Wave currentWave;

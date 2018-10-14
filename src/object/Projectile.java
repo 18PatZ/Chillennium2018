@@ -50,6 +50,7 @@ public class Projectile extends Objekt implements Moveable {
                 }
             }
         }
+        
 
         setVertical(init + 0.6 * (1 - (System.currentTimeMillis() - start) / life) * Math.sin((System.currentTimeMillis() - start) * Math.PI * 2 / 180));
 

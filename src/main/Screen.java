@@ -81,7 +81,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
         for (int i = 0; i < 15; i++)
             add(new Passive(-4,1,0,Color.GREEN, "person2.png",100));
 
-        add(new Player(2, 2, 0, Color.CADETBLUE, "troll.png", 0.5, 0.5));
+        add(new Player(2, 2, 0, Color.CADETBLUE, "troll.png", 0.5, 0.5,LevelManager.getInstance().getPlayeStartHealth()));
 
         new Image(new File("images/liz.png").toURI().toString());
         

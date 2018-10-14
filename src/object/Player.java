@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import util.Sound;
 
-public class Player extends Objekt implements Collidable, Moveable {
+public class Player extends Living implements Collidable {
 
     private Cooldown inputCool = new Cooldown();
     private int jumpTick = -1;
@@ -40,12 +40,12 @@ public class Player extends Objekt implements Collidable, Moveable {
     @Getter @Setter private boolean isWolf = false;
     @Getter @Setter private double aiStrength = 0.82;
 
-    public Player(double x, double y, double vert, Color color){
-        super(x, y, vert, color);
+    public Player(double x, double y, double vert, Color color, int health){
+        super(x, y, vert, color,health);
     }
 
-    public Player(double x, double y, double vert, Color color, String imageName){
-        super(x, y, vert, color, imageName);
+    public Player(double x, double y, double vert, Color color, String imageName,int health){
+        super(x, y, vert, color, imageName,health);
 
         for(int i = 1; i <= 4; i++)
             walking.add(new RImage("luna" + i + ".png", 80));
@@ -60,8 +60,8 @@ public class Player extends Objekt implements Collidable, Moveable {
         instance = this;
     }
 
-    public Player(double x, double y, double vert, Color color, String imageName, double xLen, double yWidth){
-        this(x, y, vert, color, imageName);
+    public Player(double x, double y, double vert, Color color, String imageName, double xLen, double yWidth,int health){
+        this(x, y, vert, color, imageName,health);
 
         hitbox = new Hitbox(x, y, xLen, yWidth);
     }

@@ -10,6 +10,7 @@ import util.RImage;
 import util.Util;
 import lombok.Getter;
 import lombok.Setter;
+import main.Screen;
 /**
  *
  * @author start
@@ -30,5 +31,12 @@ abstract class Living extends Objekt implements Movable{
     
     @Override
     public abstract void tick();
+ 
+    public void doDamadge(int damadge){//do damadge to the character
+        health -= damadge;
+        if(health<0){
+            Screen.getInstance().markForDestruction(this); //killed
+        }
+    }
     
 }

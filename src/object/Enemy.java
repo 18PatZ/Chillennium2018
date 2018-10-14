@@ -31,6 +31,7 @@ public class Enemy extends NPC{
     private double lastDY = 0;
     private double lastPX;
     private double lastPY;
+    @Getter @Setter private int damadgeDone = 10;
 
     private RImage imageNorm;
     private RImage imageFlipped;
@@ -112,7 +113,7 @@ public class Enemy extends NPC{
                     }
                 }
                 else if(victim instanceof Player){//hurt player
-                    
+                    ((Living)victim).doDamadge(damadgeDone);
                 }
                 victim = null; //if already killled
                 pursuing = false;
