@@ -53,6 +53,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
     private Image background;
     private Image border;//werewolf vigntte
+    private Image borderRed;
     private Sound sound;
 
     private int tick = 0;
@@ -79,9 +80,12 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                     add(new StaticObject(-8 - j * 2, 4 + 4 * i, 0, "shelves.png", 400, 0.6, 3));
 
         for (int i = 0; i < 15; i++)
-            add(new Passive(-4,1,0,Color.GREEN, "person2.png",100));
+            add(new Passive(-4, 1, 0,Color.GREEN, "person2.png", 100));
 
-        add(new Player(2, 2, 0, Color.CADETBLUE, "troll.png", 0.5, 0.5,LevelManager.getInstance().getPlayeStartHealth()));
+        for (int i = 0; i < 5; i++)
+            add(new Armed(-4,1,0,Color.RED, "person2.png", LevelManager.getInstance().getPlayeStartHealth()));
+
+        add(new Player(2, 2, 0, Color.CADETBLUE, "troll.png", 0.5, 0.5, LevelManager.getInstance().getPlayeStartHealth()));
 
         new Image(new File("images/liz.png").toURI().toString());
         
@@ -113,8 +117,9 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
         new LevelManager();
 
-        background = new Image(new File("images/background.png").toURI().toString());
+        background = new Image(new File("images/background_fixed.png").toURI().toString());
         border = new Image(new File("images/border2.png").toURI().toString());
+        borderRed = new Image(new File("images/border2Red.png").toURI().toString());
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize(); // get screen size wrapper
         width = (int)dim.getWidth();
@@ -394,6 +399,10 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                     }
 
                 }
+
+                context.setGlobalAlpha(0.8);
+                context.drawImage(borderRed, 0, 0, width, height);
+                context.setGlobalAlpha(1);
 
                 LevelManager.getInstance().tick();
 

@@ -4,13 +4,14 @@ import javafx.scene.paint.Color;
 import lombok.Getter;
 import lombok.Setter;
 import main.Screen;
+import object.Armed;
 import object.Passive;
 import object.Player;
 
 @Getter @Setter
 public class LevelManager {
 
-    @Getter @Setter private int defualtEnemyHealth = 100;
+    @Getter @Setter private int defaultEnemyHealth = 100;
     @Getter @Setter private int defaultPassiveHealth = 100;
     @Getter @Setter private int playeStartHealth = 100;
     @Getter private static LevelManager instance;
@@ -58,7 +59,10 @@ public class LevelManager {
             nextWave();
 
         if(needSpawn > 0 && tick % 10 == 0){
-            Screen.getInstance().addToQue(new Passive(-4,1,0, Color.GREEN, "person2.png",defaultPassiveHealth));
+            if(Math.random() < 0.25)
+                Screen.getInstance().addToQue(new Armed(-4,1,0,Color.RED, "person2.png", LevelManager.getInstance().getPlayeStartHealth()));
+            else
+                Screen.getInstance().addToQue(new Passive(-4,1,0, Color.GREEN, "person2.png",defaultPassiveHealth));
             needSpawn--;
         }
 

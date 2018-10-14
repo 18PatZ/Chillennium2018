@@ -5,9 +5,7 @@ import collision.Hitbox;
 import collision.Moveable;
 import geometry.Point2D;
 import geometry.Point3D;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import level.Level;
 import level.LevelManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +16,6 @@ import util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
-import util.Sound;
 
 public class Player extends Living implements Collidable {
 
@@ -133,7 +130,7 @@ public class Player extends Living implements Collidable {
                 if(magg <= 0.1) {
                    // target
                     Screen.getInstance().markForDestruction(target); // BITE
-                    Screen.getInstance().addToQue(new Enemy(target.getX(),target.getY(),0,Color.RED,"liz.png",LevelManager.getInstance().getDefualtEnemyHealth()));
+                    Screen.getInstance().addToQue(new Enemy(target.getX(),target.getY(),0,Color.RED,"liz.png",LevelManager.getInstance().getDefaultEnemyHealth()));
                     LevelManager.getInstance().getCurrentWave().decHumans();
                     LevelManager.getInstance().getCurrentWave().incWolf();
                     target = null;

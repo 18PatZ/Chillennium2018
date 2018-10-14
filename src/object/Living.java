@@ -5,38 +5,45 @@
  */
 package object;
 
+import collision.Moveable;
 import javafx.scene.paint.Color;
-import util.RImage;
-import util.Util;
 import lombok.Getter;
 import lombok.Setter;
 import main.Screen;
+import util.RImage;
+
 /**
- *
  * @author start
  */
-abstract class Living extends Objekt implements Movable{
-    @Setter @Getter int health;
-    
+abstract class Living extends Objekt implements Moveable {
+    @Setter
+    @Getter
+    double health;
+
     public Living(double x, double y, double vert, Color color, int health) {
         super(x, y, vert, color);
         this.health = health;
     }
-    
-        public Living(double x, double y, double vert, Color color, String imageName,int health) {
+
+    public Living(double x, double y, double vert, Color color, String imageName, int health) {
         super(x, y, vert, color);
         this.image = new RImage(imageName, 50);
         this.health = health;
     }
-    
+
     @Override
     public abstract void tick();
- 
-    public void doDamadge(int damadge){//do damadge to the character
-        health -= damadge;
-        if(health<0){
-            Screen.getInstance().markForDestruction(this); //killed
+
+    public void doDamage(double damage) {//do damadge to the character
+        health -= damage;
+        if (health <= 0) {
+            die();
+//            Screen.getInstance().markForDestruction(this); //killed
         }
     }
-    
+
+    public void die(){
+
+    }
+
 }
