@@ -116,7 +116,7 @@ public class Player extends Objekt implements Collidable, Moveable {
 
         double width = Screen.getWidth();
         double height = Screen.getHeight();
-        Point2D targetOffset = Screen.getInstance().getTargetOffset();
+        Point2D targetOffset = Screen.getInstance().getTargetOffset();  
         Point2D offset = Screen.getInstance().getOffset();
 
         double right = point.x - width * 9 / 10.0;
@@ -132,7 +132,8 @@ public class Player extends Objekt implements Collidable, Moveable {
             targetOffset.y = offset.y + up;
         else if (down > 0)
             targetOffset.y = offset.y - down;
-    }
+        System.out.println(point.print());
+     }
 
     @Override
     public Hitbox getHitbox() {

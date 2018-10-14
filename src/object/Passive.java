@@ -2,19 +2,21 @@ package object;
 
 import javafx.scene.paint.Color;
 import util.Util;
+import java.util.ArrayList;
 
 public class Passive extends NPC {
 
     boolean reached = true; //reached target
     boolean scared = false; //running aways
 
-    private double lastDX = 1;
-    private double lastDY = -1;
+
     private double threshold = 0.01; //closeness to target
     private double lastPX = 100;
     private double lastPY = 100;
     double speed;
-    
+    private double lastDX = 1;
+    private double lastDY = 0;
+    private double fov = 3; //when they get scared
 
     public Passive(double x, double y, double vert, Color color) {
         super(x, y, vert, color);
@@ -56,6 +58,7 @@ public class Passive extends NPC {
             speed = .25;//walking speed
         } else {//scared
             speed = 1.5;//running speed
+            
         }
 
 
@@ -75,7 +78,7 @@ public class Passive extends NPC {
             if (Util.canMoveTo(this, nx, ny)) {
                 setX(nx);
                 setY(ny);
-            } else {
+            } else { //scared shouldn't mater here
                 findTarget();
                 setX(getX() - lastDX / 15.0 * speed);
                 setY(getY() - lastDY / 15.0 * speed);
@@ -84,10 +87,30 @@ public class Passive extends NPC {
 
     }
 
+private double[] runWhere(){
+    int enemies = 0;
+    double sumx = 0;
+    double sumy = 0;
+    
+    //finding average location of all enemies within field of view:
+//    for (int i = 0; i < target.length; i++) { //loop through all objects
+//        if( Math.abs(objects[i].getx-getX())<fov){
+//            if(objects[i].getclass == Enemy){
+//                scared = true;
+//                //add x and y coordinates to sum
+//            }
+//         }
+//        
+//    }
+    double avx = sumx/enemies;
+    double avy = sumy/enemies;
+    return new double[]{avx,avy};
+}
 
-
-    void run() { //run away
-
+ double[] run(double[] enemies) { //run away  gives direction to run
+        double [] direction = new double[2];
+        
+        return direction;
     }
 
 

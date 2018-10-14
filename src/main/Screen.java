@@ -151,8 +151,12 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 //                    ox++;
 //                if(isPressed("Y"))
 //                    ox--;
-//                if(isPressed("O"))
-//                    oy++;
+                if(isPressed("O")){
+                    //oy++;
+                    ox = 111;
+                    oy = -14;
+                    targetOffset.x-=100;
+                }
 //                if(isPressed("I"))
 //                    oy--;
 //                System.out.println(ox + " " + oy);
