@@ -6,6 +6,8 @@ import util.Util;
 import java.util.ArrayList;
 import java.util.List;
 import main.Screen;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Passive extends NPC {
 
@@ -16,10 +18,12 @@ public class Passive extends NPC {
     private double threshold = 0.01; //closeness to target
     private double lastPX = 100;
     private double lastPY = 100;
-    double speed;
+    @Getter @Setter double runSpeed=1.3;
+    @Getter @Setter double walkSpeed=0.3;
     private double lastDX = 1;
     private double lastDY = 0;
     private double fov = 4; //when they get scared
+    private double speed;
 
     public Passive(double x, double y, double vert, Color color) {
         super(x, y, vert, color);
@@ -47,7 +51,7 @@ public class Passive extends NPC {
               //  System.out.println("position: " + getX() + "," + getY());
                 reached = false;
             } 
-            speed = .25;//walking speed
+            speed = walkSpeed;//walking speed
             }
             if (Math.abs(target[0] - getX()) < threshold && Math.abs(target[1] - getY()) < threshold) {
                 reached = true;
@@ -75,7 +79,7 @@ public class Passive extends NPC {
             }
 //            
         if(scared) {//scared
-           speed = 1.5;//running speed
+           speed = runSpeed;//running speed
 //                //still scared?
                     }
                 dx = -(getX() - target[0]);
