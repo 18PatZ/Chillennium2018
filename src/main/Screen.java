@@ -54,7 +54,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
     private Image background;
     private Image border;//werewolf vigntte
     private Image borderRed;
-    @Getter private Sound sound;
+    private Sound sound;
 
     private int tick = 0;
     private int fps = 0;
@@ -333,13 +333,26 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                     Point3D point = Util.getPointOnScreen(o.center);
 
                     context.setFill(o.color);
-                    context.fillRoundRect(point.x - 10, point.y - 10, 20, 20, 20, 20);
+                    if(o instanceof Projectile)
+                        context.fillRoundRect(point.x - 6, point.y - 6, 12, 12, 12, 12);
+                    else
+                        context.fillRoundRect(point.x - 10, point.y - 10, 20, 20, 20, 20);
 
                     if(o.image != null) {
                         if(!o.flipped)
                             context.drawImage(o.image.getImage(), point.x - o.image.getWidth() / 2, point.y - o.image.getHeight(), o.image.getWidth(), o.image.getHeight());
                         else
                             context.drawImage(o.image.getImage(), point.x + o.image.getWidth() / 2, point.y - o.image.getHeight(), -o.image.getWidth(), o.image.getHeight());
+                    }
+
+                    if(o instanceof Living){
+                        Living l = (Living) o;
+
+                        context.setFill(Color.GRAY);
+                        context.fillRect(point.x - 40, point.y + 20, 80, 5);
+
+                        context.setFill(o.color);
+                        context.fillRect(point.x - 40, point.y + 20, l.getHealth() / l.getMaxHealth() * 80, 5);
                     }
 
                     o.postTick(point);
@@ -400,7 +413,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
                 }
 
-                context.setGlobalAlpha(0.8);
+                context.setGlobalAlpha(1 - Player.getInstance().getHealth() / 100);
                 context.drawImage(borderRed, 0, 0, width, height);
                 context.setGlobalAlpha(1);
 
@@ -416,6 +429,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                     Screen.getInstance().getContext().fillText("Humans: " + LevelManager.getInstance().getCurrentWave().getNumHumans(), 40, 120);
                     Screen.getInstance().getContext().fillText("Wolves: " + LevelManager.getInstance().getCurrentWave().getNumWolves(), 40, 140);
                 }
+                Screen.getInstance().getContext().fillText("HEALTH " + (int)Player.getInstance().getHealth(), 40, 160);
 
             }
 
