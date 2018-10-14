@@ -8,6 +8,7 @@ import geometry.Point3D;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import level.Level;
+import level.LevelManager;
 import lombok.Getter;
 import lombok.Setter;
 import main.Screen;
@@ -131,8 +132,10 @@ public class Player extends Objekt implements Collidable, Moveable {
 
                 if(magg <= 0.1) {
                    // target
-                    Screen.getInstance().addToQue(new Enemy(target.getX(),target.getY(),0,Color.RED,"liz.png"));
                     Screen.getInstance().markForDestruction(target); // BITE
+                    Screen.getInstance().addToQue(new Enemy(target.getX(),target.getY(),0,Color.RED,"liz.png"));
+                    LevelManager.getInstance().getCurrentWave().decHumans();
+                    LevelManager.getInstance().getCurrentWave().incWolf();
                     target = null;
                 }
             }
@@ -196,8 +199,8 @@ public class Player extends Objekt implements Collidable, Moveable {
         
         if(Screen.getInstance().isPressed("T") && inputCool.expired("T", 0.05)){
             Projectile proj = new Projectile(getX(), getY(), 0, getVertical(), Color.INDIANRED, 5);
-            proj.setVelX(0.35 * lastDX);
-            proj.setVelY(0.35 * lastDY);
+            proj.setVelX(0.2 * lastDX);
+            proj.setVelY(0.2 * lastDY);
             Screen.getInstance().getAddQueue().add(proj);
         }
 

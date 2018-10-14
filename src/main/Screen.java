@@ -79,7 +79,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                     add(new StaticObject(-8 - j * 2, 4 + 4 * i, 0, "shelves.png", 400, 0.6, 3));
 
         for (int i = 0; i < 15; i++)
-            add(new Passive(1,1,0,Color.GREEN, "person2.png"));
+            add(new Passive(-4,1,0,Color.GREEN, "person2.png"));
 
         add(new Player(2, 2, 0, Color.CADETBLUE, "troll.png", 0.5, 0.5));
 
@@ -92,8 +92,12 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
     private void add(Objekt obj){
         objekts.add(obj);
-        if(obj instanceof Moveable)
-            moveables.add((Moveable) obj);
+        if(obj instanceof Moveable) {
+            if(moveables.size() > 0)
+                moveables.add(moveables.size() - 1, (Moveable) obj);
+            else
+                moveables.add((Moveable) obj);
+        }
     }
     
 
@@ -340,9 +344,6 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                 if(tick == 360)
                     LevelManager.getInstance().nextWave();
 
-                if(tick >= 360)
-                    LevelManager.getInstance().getCurrentWave().tick();
-
                 objekts.removeAll(destroyQueue);
                 moveables.removeAll(destroyQueue);
                 destroyQueue.clear();
@@ -370,39 +371,42 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 //                if(tick % 360 - 180 >= 0 && tick % 360 - 180 <= 60)
 //                    pitch += 360.0 / 60.0;
 
-// border image
-    if(Player.getInstance().isWolf()){
-        //sound
-        if(borderTick == 1){
-            sound.boom();
-        }
-        if(borderTick<60){
-            context.setGlobalAlpha(((double)borderTick)/60);
-            context.drawImage(border, 0, 0,width,height);
-            borderTick++;
-            System.out.println("border: "+borderTick);
+                // border image
+                if(Player.getInstance().isWolf()){
+                    //sound
+                    if(borderTick == 1)
+                        sound.boom();
+
+                    if(borderTick < 60)
+                        borderTick++;
+
+                    context.setGlobalAlpha(((double)borderTick)/70);
+                    context.drawImage(border, 0, 0, width, height);
+                    context.setGlobalAlpha(1);
+
+                }
+                if(!Player.getInstance().isWolf()){
+                    if(borderTick>1){
+                        context.setGlobalAlpha(((double)borderTick)/70);
+                        context.drawImage(border, 0, 0,width,height);
                         context.setGlobalAlpha(1);
-        }
-        else{
-            context.drawImage(border, 0, 0,width,height);
-        }
+                        borderTick--;
+                    }
 
-    }
-    if(!Player.getInstance().isWolf()){
-        if(borderTick>1){
-            context.setGlobalAlpha(((double)borderTick)/60);
-            context.drawImage(border, 0, 0,width,height);
-            context.setGlobalAlpha(1);
-            borderTick--;
-        }
+                }
 
-    }
-
+                LevelManager.getInstance().tick();
 
                 Screen.getInstance().getContext().setFill(Color.GRAY);
                 Screen.getInstance().getContext().setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 24));
                 Screen.getInstance().getContext().fillText("FPS: " + fps, 40, 40);
                 Screen.getInstance().getContext().fillText("Wolf: " + Player.getInstance().isWolf(), 40, 60);
+                Screen.getInstance().getContext().fillText("Wave #" + LevelManager.getInstance().getWaveNumber(), 40, 80);
+                Screen.getInstance().getContext().fillText("Game over: " + LevelManager.getInstance().isGameOver(), 40, 100);
+                if(LevelManager.getInstance().getCurrentWave() != null){
+                    Screen.getInstance().getContext().fillText("Humans: " + LevelManager.getInstance().getCurrentWave().getNumHumans(), 40, 120);
+                    Screen.getInstance().getContext().fillText("Wolves: " + LevelManager.getInstance().getCurrentWave().getNumWolves(), 40, 140);
+                }
 
             }
 

@@ -11,6 +11,7 @@ import geometry.Point3D;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.paint.Color;
+import level.LevelManager;
 import lombok.Getter;
 import lombok.Setter;
 import main.Screen;
@@ -37,7 +38,7 @@ public class Enemy extends NPC{
     private boolean pursuing = false;
     private boolean reached = true; 
     private double speed;
-    private double threshold = 0.01;
+    private double threshold = 0.1;
     @Getter @Setter double runSpeed=1.3;
     @Getter @Setter double walkSpeed=0.3;
     private Objekt victim= null;
@@ -99,11 +100,17 @@ public class Enemy extends NPC{
                 
                 if(victim!=null && !(victim instanceof Player)){ //code for passives
                     
-                    if(!(Screen.getInstance().getDestroyQueue().contains(victim))) //not already killed
-                        Screen.getInstance().addToQue(new Enemy(victim.getX(),victim.getY(),0,Color.RED,"liz.png"));
+                    if(!(Screen.getInstance().getDestroyQueue().contains(victim))) { //not already killed
+                        Screen.getInstance().addToQue(new Enemy(victim.getX(), victim.getY(), 0, Color.RED, "liz.png"));
                         Screen.getInstance().markForDestruction(victim);
-                        System.out.println("destroying victim");
 
+                        if(LevelManager.getInstance().getCurrentWave() != null) {
+                            LevelManager.getInstance().getCurrentWave().incWolf();
+                            LevelManager.getInstance().getCurrentWave().decHumans();
+                        }
+
+                        System.out.println("destroying victim");
+                    }
                 }
                 else if(victim instanceof Player){//hurt player
                     

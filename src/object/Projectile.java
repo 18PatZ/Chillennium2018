@@ -2,6 +2,7 @@ package object;
 
 import collision.Moveable;
 import javafx.scene.paint.Color;
+import level.LevelManager;
 import lombok.Getter;
 import lombok.Setter;
 import main.Screen;
@@ -39,9 +40,9 @@ public class Projectile extends Objekt implements Moveable {
             else if(velY == 0)
                 velX *= -1;
             else {
-                if(Util.canMoveTo(this, getX() + velX, getY()))
+                if(Util.canMoveTo(this, getX() + velX, getY() - velY))
                     velY *= -1;
-                if(Util.canMoveTo(this, getX(), getY() + velY))
+                else if(Util.canMoveTo(this, getX(), getY() + velY))
                     velX *= -1;
                 else {
                     velY *= -1;
@@ -51,6 +52,18 @@ public class Projectile extends Objekt implements Moveable {
         }
 
         setVertical(init + 0.6 * (1 - (System.currentTimeMillis() - start) / life) * Math.sin((System.currentTimeMillis() - start) * Math.PI * 2 / 180));
+
+        for (Moveable moveable : Screen.getInstance().getMoveables()) {
+            if(moveable instanceof Enemy){
+                Enemy e = (Enemy) moveable;
+                if(Math.abs(e.getX() - getX()) <= 0.1 && Math.abs(e.getY() - getY()) <= 0.1){
+                    Screen.getInstance().markForDestruction(e);
+                    if(LevelManager.getInstance().getCurrentWave() != null)
+                        LevelManager.getInstance().getCurrentWave().decWolf();
+                    break;
+                }
+            }
+        }
 
         if(System.currentTimeMillis() >= start + life)
             Screen.getInstance().markForDestruction(this);

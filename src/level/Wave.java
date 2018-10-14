@@ -1,6 +1,8 @@
 package level;
 
 import collision.Moveable;
+import javafx.scene.paint.Color;
+import lombok.Getter;
 import main.Screen;
 import object.Enemy;
 import object.Passive;
@@ -9,11 +11,16 @@ import object.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class Wave {
 
     private int numTurn = 5;
+    private int numHumans;
+    private int numWolves;
 
     public void start(){
+
+        numTurn *= LevelManager.getInstance().getWaveNumber();
 
         List<Passive> turn = new ArrayList<>();
 
@@ -22,8 +29,14 @@ public class Wave {
             double chance = ((double)numTurn) / humans.size();
             for(int i = 0; i < humans.size(); i++){
                 Moveable h = humans.get(i);
-                if(h instanceof Passive && Math.random() <= chance)
-                    turn.add((Passive) h);
+                if(h instanceof Passive) {
+                    if (Math.random() <= chance) {
+                        turn.add((Passive) h);
+                        numWolves++;
+                    }
+                    else
+                        numHumans++;
+                }
             }
         }
 
@@ -60,5 +73,29 @@ public class Wave {
 //        System.out.println(wolving + " " + tick + " " + nextTransform + " " + unwolfTick);
         tick++;
     }
+
+    public void decHumans(){
+        numHumans--;
+        if(numHumans <= 0)
+            LevelManager.getInstance().endGame();
+    }
+
+    public void decWolf(){
+        numWolves--;
+        if(numWolves <= 0) {
+            int num = 20 * LevelManager.getInstance().getWaveNumber();
+            LevelManager.getInstance().setNeedSpawn(num - numHumans);
+            numHumans = num;
+
+            System.out.println("END WAVE");
+
+            LevelManager.getInstance().endWave();
+        }
+    }
+
+    public void incWolf(){
+        numWolves++;
+    }
+
 
 }
