@@ -6,6 +6,8 @@
 package object;
 
 import collision.Moveable;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.paint.Color;
 import level.LevelManager;
 import lombok.Getter;
@@ -45,6 +47,10 @@ public class Enemy extends NPC {
     @Setter
     double walkSpeed = 0.3;
     private Objekt victim = null;
+    private int animTick = 0;
+    
+    private List<RImage> walking = new ArrayList<>();
+
 
 
     public Enemy(double x, double y, double vert, Color color, int health) {
@@ -52,6 +58,8 @@ public class Enemy extends NPC {
         minWalkDist = 4;
         lastPX = getX();
         lastPY = getY();
+        walking.add(new RImage("wolfie1.png",80));
+        walking.add(new RImage("wolfie2.png",80));       
     }
 
     public Enemy(double x, double y, double vert, Color color, String imageName, int health) {
@@ -61,6 +69,8 @@ public class Enemy extends NPC {
         lastPX = getX();
         lastPY = getY();
         Screen.getInstance().getSound().howl();
+        walking.add(new RImage("wolfie1.png",80));
+        walking.add(new RImage("wolfie2.png",80));    
         //imageFlipped = new RImage("troll_flipped.png", 50);
     }
 
@@ -72,6 +82,11 @@ public class Enemy extends NPC {
         double dx = 0;
         double dy = 0;
 
+        //image
+        animTick++;
+        image = walking.get((animTick / 10) % walking.size());
+        
+        
         if (!pursuing) { //normal operating
             if (reached) {
                 findTarget();

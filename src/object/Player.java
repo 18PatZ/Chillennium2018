@@ -37,6 +37,7 @@ public class Player extends Living implements Collidable {
     @Getter @Setter private boolean isWolf = false;
     @Getter @Setter private double aiStrength = 0.82;
 
+
     public Player(double x, double y, double vert, Color color, int health){
         super(x, y, vert, color,health);
     }

@@ -10,6 +10,7 @@ import util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+import util.RImage;
 
 public class Passive extends NPC {
 
@@ -30,21 +31,33 @@ public class Passive extends NPC {
     private double lastDY = 0;
     private double fov = 4; //when they get scared
     private double speed;
+    private List<RImage> walking = new ArrayList<>();
+    private RImage imgStand;
+    private int animTick=0;
 
     public Passive(double x, double y, double vert, Color color, int health) {
         super(x, y, vert, color, health);
         lastPX = x;
         lastPY = y;
         minWalkDist = 4;
+        for(int i = 1; i <= 4; i++)
+            walking.add(new RImage("genmale" + i + ".png", 80));
     }
 
     public Passive(double x, double y, double vert, Color color, String imageName, int health) {
         super(x, y, vert, color, imageName, health);
         minWalkDist = 4;
+        for(int i = 1; i <= 4; i++)
+            walking.add(new RImage("genmale" + i + ".png", 80));
     }
 
 
-    public void tick() { //change dy and dx based on ai engine
+    public void tick() {
+animTick ++;
+
+  image = walking.get((animTick / 10) % walking.size());
+
+//change dy and dx based on ai engine
         double size = 5;
 
         double dx = 0;
@@ -73,7 +86,7 @@ public class Passive extends NPC {
         System.out.println("runwhere: " + go[0] + "," + go[1]);
         if (!(go[0] == 1000) && !(go[1] == 1000)) {
             System.out.println("scared");
-//                 System.out.println("scared");
+//                 System.out.println("");
             scared = true;
 //                //introducing some randomness
             target[0] = run(go)[0] - (Math.random() / 10);
