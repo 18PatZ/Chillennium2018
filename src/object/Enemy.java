@@ -140,27 +140,35 @@ public class Enemy extends NPC{
     }
 
     
-    private double[] runWhere(){
-    int enemies  = 0;
+   private double[] runWhere() {
+        int enemies = 0;
 
-    double posx=1000,posy = 1000;
-    
-    //finding average location of all enemies within field of view:
-    List<Objekt> pairs = new ArrayList<>();
-                for(Moveable p1 : Screen.getInstance().getMoveables()){
-                    if((p1 instanceof Player )|| p1 instanceof Passive){
-                        Objekt victim = (Objekt)p1;
-                            if(Math.abs(victim.getX()-getX())<fov && Math.abs(victim.getY()-getY())<fov){
-                                  pursuing = true;
-                                  posx = victim.getX();
-                                  posy = victim.getY();
-                                //scared = true;
-                            }
-                        }
-                }    
-         
-        return new double[]{posx,posy};
-}
+     double posx = 1000, posy = 1000;
+     double dist = Double.MAX_VALUE;
+
+     for (Moveable p1 : Screen.getInstance().getMoveables()) {
+         if ((p1 instanceof Player && !((Player) p1).isWolf()) || p1 instanceof Passive) {
+             Objekt victim = (Objekt) p1;
+             double dx = Math.abs(victim.getX() - getX());
+             double dy = Math.abs(victim.getY() - getY());
+
+             if (dx < fov && dy < fov) {
+                 double d = dx * dx + dy * dy;
+                 if(d < dist) {
+                     dist = d;
+                     posx = victim.getX();
+                     posy = victim.getY();
+                 }
+                 //scared = true;
+             }
+         }
+     }
+
+     if(posx != 1000 || posy != 1000)
+         pursuing = true;
+
+     return new double[]{posx, posy};
+ }
 
 }
 
