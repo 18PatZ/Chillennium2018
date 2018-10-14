@@ -50,9 +50,12 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
     private long lastTime = System.currentTimeMillis();
 
     private Image background;
+    private Image border;//werewolf vigntte
 
     private int tick = 0;
     private int fps = 0;
+    private int borderTick= 0;
+    private boolean wolfLast = false;
 
     public void set(){
         add(new StaticObject(-4.2, 0, 2, "cowS.png", 200));
@@ -85,6 +88,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
         if(obj instanceof Moveable)
             moveables.add((Moveable) obj);
     }
+    
 
     public boolean isPressed(String str){
         return input.contains(str.toLowerCase());
@@ -99,6 +103,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
         new LevelManager();
 
         background = new Image(new File("images/background.png").toURI().toString());
+        border = new Image(new File("images/border2.png").toURI().toString());
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize(); // get screen size wrapper
         width = (int)dim.getWidth();
@@ -137,7 +142,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
         set();
 
-//        Point3D pp = Util.getPointOnScreen(10, 0, 0);
+//        Point3D pp = Util.getPointOnScreen(10, 0, 0b
 //        System.out.println(pp.getX() + " " + pp.getY() + " " + pp.getZ());
 //        ox = 1548.2506003549065 - pp.getX();
 //        oy = pp.getY() - 205;
@@ -171,7 +176,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                 }
 //                System.out.println(ox + " " + oy);
                 context.drawImage(background, offset.x + ox, offset.y + oy, 1920 * 1.5, 1920/1.7320875438 * 1.5);
-
+                
                 if(tick % 5 == 0)
                     fps = (int) (1.0 / (System.currentTimeMillis() - lastTime) * 1000);
 
@@ -352,12 +357,34 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                 if(isPressed("DOWN"))
                     pitch -= sp;
 
-//                if(tick % 360 <= 60)
+//                if(tick % 360 <= 60get
 //                    yaw += 360.0 / 60.0;
 //
 //                if(tick % 360 - 180 >= 0 && tick % 360 - 180 <= 60)
 //                    pitch += 360.0 / 60.0;
 
+// border image
+    if(Player.getInstance().isWolf()){
+        if()
+        if(borderTick<60){
+            context.setGlobalAlpha(((double)borderTick)/60);
+            context.drawImage(border, 0, 0,width,height);
+            borderTick++;
+        }
+        else{
+            context.drawImage(border, 0, 0,width,height);
+        }
+        wolfLast = true;
+    }
+    if(!Player.getInstance().isWolf()){
+        if(borderTick>1){
+            context.setGlobalAlpha(((double)borderTick)/60);
+            context.drawImage(border, 0, 0,width,height);
+            context.setGlobalAlpha(1);
+            borderTick--;
+        }
+
+    }
 
 
                 Screen.getInstance().getContext().setFill(Color.GRAY);
