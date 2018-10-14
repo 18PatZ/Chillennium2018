@@ -15,6 +15,8 @@ import javafx.scene.media.MediaPlayer;
 
 public class Sound 
 {
+    long lastSound = System.currentTimeMillis();
+    long time = 600;
     private boolean running = false;
     private Thread thread;
     private boolean playSong = false;
@@ -37,26 +39,39 @@ public class Sound
 
         
     public void oof(){
-        MediaPlayer Oof = new MediaPlayer(oof);
-        Oof.play();
+        if((System.currentTimeMillis()-lastSound)>time){
+            lastSound = System.currentTimeMillis();
+            MediaPlayer Oof = new MediaPlayer(oof);
+            Oof.play();
+        }
     }
     
     public void howl(){
-        MediaPlayer Howl = new MediaPlayer(howl);
-        Howl.play();
+        if((System.currentTimeMillis()-lastSound)>time){
+            lastSound = System.currentTimeMillis();        
+            MediaPlayer Howl = new MediaPlayer(howl);
+            Howl.play();
+        }
     }
     public void hitwolf(){
-        MediaPlayer hitWolf = new MediaPlayer(hitwolf);
-        hitWolf.play();
+        if((System.currentTimeMillis()-lastSound)>time){
+            lastSound = System.currentTimeMillis();        
+            MediaPlayer hitWolf = new MediaPlayer(hitwolf);
+            hitWolf.play();
+        }
     }
   
     public void boom(){
-        MediaPlayer Boom = new MediaPlayer(boom);
-        Boom.play();
-    }
+            MediaPlayer Boom = new MediaPlayer(boom);
+            Boom.play();
+        }
+    
         public void ow(){
-        MediaPlayer Ow = new MediaPlayer(ow);
-        Ow.play();
+        if((System.currentTimeMillis()-lastSound)>time){
+            lastSound = System.currentTimeMillis();            
+            MediaPlayer Ow = new MediaPlayer(ow);
+            Ow.play();
+        }
     }
 
 //    public void boom(){
