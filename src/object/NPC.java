@@ -5,6 +5,7 @@
  */
 package object;
 
+import collision.Moveable;
 import javafx.scene.paint.Color;
 import util.RImage;
 import util.Util;
@@ -13,7 +14,7 @@ import util.Util;
  *
  * @author start
  */
-abstract class NPC extends Objekt{
+abstract class NPC extends Objekt implements Moveable {
     double[] target = new double[2];
     double minWalkDist;
 

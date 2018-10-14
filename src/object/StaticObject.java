@@ -20,6 +20,12 @@ public class StaticObject extends Objekt implements Collidable {
         hitbox = new Hitbox(x, y, xLen, yWidth);
     }
 
+    public StaticObject(double x, double y, double vert, String imageName, double width, double xLen, double yWidth, double vHeight){
+        this(x, y, vert, imageName, width);
+
+        hitbox = new Hitbox(x, y, xLen, yWidth, vHeight);
+    }
+
     @Override
     public void tick() {
 

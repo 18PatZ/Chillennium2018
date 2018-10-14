@@ -1,5 +1,6 @@
 package main;
 
+import collision.Moveable;
 import geometry.Line;
 import geometry.Point2D;
 import geometry.Point3D;
@@ -13,13 +14,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import level.LevelManager;
 import lombok.Getter;
-import object.Cube;
-import object.Objekt;
-import object.Player;
-import object.StaticObject;
+import object.*;
 import util.POPair;
 import util.Util;
 
@@ -44,22 +44,37 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
     private Point2D offset = new Point2D(0, 0);
     private Point2D targetOffset = new Point2D(0, 0);
     private List<Objekt> objekts = new ArrayList<>();
+    private List<Moveable> moveables = new ArrayList<>();
     private List<Objekt> destroyQueue = new ArrayList<>();
     private List<Objekt> addQueue = new ArrayList<>();
+    private long lastTime = System.currentTimeMillis();
 
     private Image background;
 
     private int tick = 0;
+    private int fps = 0;
 
     public void set(){
-        objekts.add(new StaticObject(-4, -4, 0, "cow.jpg", 200));
-        objekts.add(new StaticObject(2, 4, 0, "cubeT.png", 156, 1, 1));
-        objekts.add(new Player(2, 2, 0, Color.CADETBLUE, "troll.png", 0.5, 0.5));
+        add(new StaticObject(-4, -4, 0, "cow.jpg", 200));
+        add(new StaticObject(2, 4, 0, "cubeT.png", 156, 1, 1));
+
         for(int i = 0; i < 10; i++)
-            objekts.add(new StaticObject(4, 5 + i * 2, 0, "fruit_holder.png", 400, 3, 1));
-		for (int i = 0; i < 15; i++) 
-            objekts.add(new Passive(1,1,0,Color.GREEN, "person.png"));
-        
+            add(new StaticObject(4, 5 + i * 2, 0, "fruit_holder.png", 400, 3, 1));
+
+        for(int i = 0; i < 2; i++)
+            for(int j = 0; j < 3; j++)
+                add(new StaticObject(1 - j * 2, 11 + i * 4, 0, "veggie_holder.png", 400, 1, 3));
+
+        for (int i = 0; i < 15; i++)
+            add(new Passive(1,1,0,Color.GREEN, "person.png"));
+
+        add(new Player(2, 2, 0, Color.CADETBLUE, "troll.png", 0.5, 0.5));
+    }
+
+    private void add(Objekt obj){
+        objekts.add(obj);
+        if(obj instanceof Moveable)
+            moveables.add((Moveable) obj);
     }
 
     public boolean isPressed(String str){
@@ -138,47 +153,59 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 //                System.out.println(ox + " " + oy);
                 context.drawImage(background, offset.x + ox, offset.y + oy, 1920 * 1.5, 1920/1.7320875438 * 1.5);
 
+                if(tick % 15 == 0)
+                    fps = (int) (1.0 / (System.currentTimeMillis() - lastTime) * 1000);
+
+                Screen.getInstance().getContext().setFill(Color.GRAY);
+                Screen.getInstance().getContext().setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 24));
+                Screen.getInstance().getContext().fillText("FPS: " + fps, 40, 40);
+
+                lastTime = System.currentTimeMillis();
+
                 // grid stuff
 
-//                for(int i = 0; i <= 40; i++){
-//
-//                    double[][] points = new double[][]{
-//                            {-20, 10},
-//                            {0, 0},
-//                            {i, i},
-//                    };
-//
-//                    double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(yaw), 0), points);
-//
-//                    double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(pitch), 0, 0),
-//                            Util.translate(rot, 0, 0, 0));
-//
-//                    fin = Util.getDisplayed(fin);
-//
-//                    Line line = new Line(Point3D.fromArray(fin[0]), Point3D.fromArray(fin[1]));
-//                    line.color = Color.GRAY;
-//                    lines.add(line);
-//                }
-//
-//                for(int i = -20; i <= 10; i++){
-//
-//                    double[][] points = new double[][]{
-//                            {-40, 0},
-//                            {0, 0},
-//                            {i, i},
-//                    };
-//
-//                    double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(yaw + 90), 0), points);
-//
-//                    double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(pitch), 0, 0),
-//                            Util.translate(rot, 0, 0, 0));
-//
-//                    fin = Util.getDisplayed(fin);
-//
-//                    Line line = new Line(Point3D.fromArray(fin[0]), Point3D.fromArray(fin[1]));
-//                    line.color = Color.GRAY;
-//                    lines.add(line);
-//                }
+                if(true) {
+
+                    for(int i = 0; i <= 40; i++){
+
+                        double[][] points = new double[][]{
+                                {-20, 10},
+                                {0, 0},
+                                {i, i},
+                        };
+
+                        double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(yaw), 0), points);
+
+                        double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(pitch), 0, 0),
+                                Util.translate(rot, 0, 0, 0));
+
+                        fin = Util.getDisplayed(fin);
+
+                        Line line = new Line(Point3D.fromArray(fin[0]), Point3D.fromArray(fin[1]));
+                        line.color = Color.GRAY;
+                        lines.add(line);
+                    }
+
+                    for(int i = -20; i <= 10; i++){
+
+                        double[][] points = new double[][]{
+                                {-40, 0},
+                                {0, 0},
+                                {i, i},
+                        };
+
+                        double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(yaw + 90), 0), points);
+
+                        double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(pitch), 0, 0),
+                                Util.translate(rot, 0, 0, 0));
+
+                        fin = Util.getDisplayed(fin);
+
+                        Line line = new Line(Point3D.fromArray(fin[0]), Point3D.fromArray(fin[1]));
+                        line.color = Color.GRAY;
+                        lines.add(line);
+                    }
+                }
 
                 // end grid
 
@@ -228,7 +255,6 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
 //                List<POPair> pairs = new ArrayList<>();
                 List<Objekt> pairs = new ArrayList<>();
-                List<Objekt> players = new ArrayList<>();
 
                 objekts.forEach(o -> {
 
@@ -236,13 +262,13 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
 //                    Point3D point = Util.getPointOnScreen(o.center);
 //                    pairs.add(POPair.builder().object(o).screenPoint(point).build());
-                    (o instanceof Player ? players : pairs).add(o);
+                    if(!(o instanceof Moveable))
+                        pairs.add(o);
 
                 });
 
-                while(players.size() > 0){
-                    Objekt player = players.remove(0);
-
+                for(Moveable p1 : moveables){
+                    Objekt player = (Objekt) p1;
                     for(int j = 0; j <= pairs.size(); j++) {
                         if(j == pairs.size()) {
                             pairs.add(player);
@@ -250,7 +276,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                         }
                         else {
                             Objekt p = pairs.get(j);
-                            if (!(p instanceof Player) && player.center.getX() > p.center.getX() && player.center.getZ() < p.center.getZ()) {
+                            if (!(p instanceof Moveable) && player.center.getX() > p.center.getX() && player.center.getZ() < p.center.getZ()) {
                                 pairs.add(j, player);
                                 break;
                             }
@@ -278,9 +304,10 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                 });
 
                 objekts.removeAll(destroyQueue);
+                moveables.removeAll(destroyQueue);
                 destroyQueue.clear();
 
-                objekts.addAll(addQueue);
+                addQueue.forEach(Screen.this::add);
                 addQueue.clear();
 
                 double damp = 7.0;

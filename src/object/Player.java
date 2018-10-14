@@ -2,6 +2,7 @@ package object;
 
 import collision.Collidable;
 import collision.Hitbox;
+import collision.Moveable;
 import geometry.Point2D;
 import geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -11,14 +12,13 @@ import util.Cooldown;
 import util.RImage;
 import util.Util;
 
-public class Player extends Objekt implements Collidable {
+public class Player extends Objekt implements Collidable, Moveable {
 
     private Cooldown inputCool = new Cooldown();
     private int jumpTick = -1;
 
     private double lastDX = 1;
     private double lastDY = 0;
-	long lastime;
 
     private RImage imageNorm;
     private RImage imageFlipped;
@@ -27,7 +27,6 @@ public class Player extends Objekt implements Collidable {
 
     public Player(double x, double y, double vert, Color color){
         super(x, y, vert, color);
-		lastime = System.currentTimeMillis();
     }
 
     public Player(double x, double y, double vert, Color color, String imageName){
@@ -47,9 +46,7 @@ public class Player extends Objekt implements Collidable {
 
     @Override
     public void tick() {
-        System.out.println("fps: "+ 1.0/((System.currentTimeMillis()-lastime)/1000.0));
-        lastime = System.currentTimeMillis();
-	
+
         double dx = 0;
         double dy = 0;
         if(Screen.getInstance().isPressed("W")){
@@ -107,9 +104,9 @@ public class Player extends Objekt implements Collidable {
         }
 
         if(Screen.getInstance().isPressed("T") && inputCool.expired("T", 0.05)){
-            Projectile proj = new Projectile(getX(), getY(), getVertical(), Color.INDIANRED, 15);
-            proj.setVelX(0.4 * lastDX);
-            proj.setVelY(0.4 * lastDY);
+            Projectile proj = new Projectile(getX(), getY(), getVertical(), Color.INDIANRED, 5);
+            proj.setVelX(0.35 * lastDX);
+            proj.setVelY(0.35 * lastDY);
             Screen.getInstance().getAddQueue().add(proj);
         }
     }
