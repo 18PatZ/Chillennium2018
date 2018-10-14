@@ -81,8 +81,8 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
         return input.contains(str.toLowerCase());
     }
 
-    double ox = -14;
-    double oy = -39;
+    double ox = 0;//-14;
+    double oy = 0;//-39;
 
     @Override
     public void start(Stage stage) {
@@ -127,6 +127,11 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
         scene.setOnKeyReleased(this);
 
         set();
+
+        Point3D pp = Util.getPointOnScreen(10, 0, 0);
+        System.out.println(pp.getX() + " " + pp.getY() + " " + pp.getZ());
+        ox = 1548.2506003549065 - pp.getX();
+        oy = pp.getY() - 205;
 
         new AnimationTimer(){
 
