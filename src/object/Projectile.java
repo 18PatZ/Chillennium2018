@@ -33,8 +33,20 @@ public class Projectile extends Objekt {
             setY(ny);
         }
         else {
-            velX *= -1;
-            velY *= -1;
+            if(velX == 0)
+                velY *= -1;
+            else if(velY == 0)
+                velX *= -1;
+            else {
+                if(Util.canMoveTo(this, getX() + velX, getY()))
+                    velY *= -1;
+                if(Util.canMoveTo(this, getX(), getY() + velY))
+                    velX *= -1;
+                else {
+                    velY *= -1;
+                    velX *= -1;
+                }
+            }
         }
 
         setVertical(init + 0.6 * (1 - (System.currentTimeMillis() - start) / life) * Math.sin((System.currentTimeMillis() - start) * Math.PI * 2 / 180));

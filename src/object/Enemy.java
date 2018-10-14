@@ -115,15 +115,21 @@ public class Enemy extends NPC{
             lastDX = dx / mag;
             lastDY = dy / mag;
 
-            double nx = getX() + lastDX / 15.0 * speed;
-            double ny = getY() + lastDY / 15.0 * speed;
+//            double nx = getX() + lastDX / 15.0 * speed;
+//            double ny = getY() + lastDY / 15.0 * speed;
 
             lastPX = getX();
             lastPY = getY();
-            if (Util.canMoveTo(this, nx, ny)) {
-                setX(nx);
-                setY(ny);
-            } else { //scared shouldn't mater here
+//            if (Util.canMoveTo(this, nx, ny)) {
+//                setX(nx);
+//                setY(ny);
+//            }
+            double[] pos = Util.calcCollision(this, getX(), getY(), lastDX / 15.0 * speed, lastDY / 15.0 * speed);
+            if(pos != null){
+                setX(pos[0]);
+                setY(pos[1]);
+            }
+            else { //scared shouldn't mater here
                 findTarget();
                 setX(getX() - lastDX / 15.0 * speed);
                 setY(getY() - lastDY / 15.0 * speed);

@@ -159,13 +159,18 @@ public class Player extends Objekt implements Collidable, Moveable {
             lastDX = dx / mag;
             lastDY = dy / mag;
 
-            double nx = getX() + lastDX / 15.0 * speed;
-            double ny = getY() + lastDY / 15.0 * speed;
+//            double nx = getX() + lastDX / 15.0 * speed;
+//            double ny = getY() + lastDY / 15.0 * speed;
 
-            if(Util.canMoveTo(this, nx, ny)) {
-                setX(nx);
-                setY(ny);
+            double[] pos = Util.calcCollision(this, getX(), getY(), lastDX / 15.0 * speed, lastDY / 15.0 * speed);
+            if(pos != null){
+                setX(pos[0]);
+                setY(pos[1]);
             }
+//            if(Util.canMoveTo(this, nx, ny)) {
+//                setX(nx);
+//                setY(ny);
+//            }
 
             animTick += (int) speed;
 
