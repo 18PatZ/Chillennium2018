@@ -33,9 +33,13 @@ abstract class Living extends Objekt implements Moveable {
 
     @Override
     public abstract void tick();
+    public void onHit(){
+        
+    }
 
     public void doDamage(double damage) {//do damadge to the character
         health -= damage;
+        onHit();
         if (health <= 0) {
             die();
 //            Screen.getInstance().markForDestruction(this); //killed

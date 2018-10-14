@@ -54,7 +54,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
     private Image background;
     private Image border;//werewolf vigntte
     private Image borderRed;
-    private Sound sound;
+    @Getter private Sound sound;
 
     private int tick = 0;
     private int fps = 0;

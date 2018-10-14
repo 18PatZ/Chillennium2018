@@ -60,6 +60,7 @@ public class Enemy extends NPC {
         imageNorm = image;
         lastPX = getX();
         lastPY = getY();
+        Screen.getInstance().getSound().howl();
         //imageFlipped = new RImage("troll_flipped.png", 50);
     }
 
@@ -205,6 +206,10 @@ public class Enemy extends NPC {
         Screen.getInstance().markForDestruction(this);
         if(LevelManager.getInstance().getCurrentWave() != null)
             LevelManager.getInstance().getCurrentWave().decWolf();
+    }
+        @Override
+    public void onHit(){
+        Screen.getInstance().getSound().howl();
     }
 }
 

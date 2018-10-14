@@ -242,4 +242,9 @@ public class Player extends Living implements Collidable {
     public Hitbox getHitbox() {
         return hitbox;
     }
+    @Override
+    public void onHit(){
+        Screen.getInstance().getSound().oof();
+    }
+    
 }

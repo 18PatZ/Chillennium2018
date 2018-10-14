@@ -19,7 +19,10 @@ public class Sound
     private Thread thread;
     private boolean playSong = false;
     Media boom = new Media(new File("sound/boom.mp3").toURI().toString());
-
+    Media ow = new Media(new File("sound/ow.mp3").toURI().toString());
+    Media hitwolf = new Media(new File("sound/hitwolf.mp3").toURI().toString());
+    Media howl = new Media(new File("sound/howl.mp3").toURI().toString());
+    Media oof = new Media(new File("sound/oof.mp3").toURI().toString());
     
     public Sound()
     {
@@ -32,12 +35,28 @@ public class Sound
 
 
 
+        
+    public void oof(){
+        MediaPlayer Oof = new MediaPlayer(oof);
+        Oof.play();
+    }
     
-
+    public void howl(){
+        MediaPlayer Howl = new MediaPlayer(howl);
+        Howl.play();
+    }
+    public void hitwolf(){
+        MediaPlayer hitWolf = new MediaPlayer(hitwolf);
+        hitWolf.play();
+    }
   
     public void boom(){
         MediaPlayer Boom = new MediaPlayer(boom);
         Boom.play();
+    }
+        public void ow(){
+        MediaPlayer Ow = new MediaPlayer(ow);
+        Ow.play();
     }
 
 //    public void boom(){

@@ -172,4 +172,8 @@ public class Passive extends NPC {
             System.out.println("destroying victim");
         }
     }
+    @Override
+    public void onHit(){
+        Screen.getInstance().getSound().ow();
+    }
 }
