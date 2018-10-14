@@ -17,8 +17,7 @@ import util.Util;
  *
  * @author start
  */
-public class Enemy extends Objekt{
-
+public class Enemy extends NPC{
     private Cooldown inputCool = new Cooldown();
 
 
@@ -31,11 +30,12 @@ public class Enemy extends Objekt{
 
     public Enemy(double x, double y, double vert, Color color){
         super(x, y, vert, color);
+        minWalkDist = 4;
     }
 
     public Enemy(double x, double y, double vert, Color color, String imageName){
         super(x, y, vert, color, imageName);
-
+        minWalkDist = 4;
         imageNorm = image;
         //imageFlipped = new RImage("troll_flipped.png", 50);
     }

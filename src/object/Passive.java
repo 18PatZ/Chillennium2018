@@ -3,27 +3,29 @@ package object;
 import javafx.scene.paint.Color;
 import util.Util;
 
-public class Passive extends Objekt {
+public class Passive extends NPC {
 
     boolean reached = true; //reached target
-    double minTargetDist = 4;
-    boolean scared = false;
+    boolean scared = false; //running aways
 
-    private double[] target = new double[2];
     private double lastDX = 1;
     private double lastDY = -1;
     private double threshold = 0.01; //closeness to target
     private double lastPX = 100;
     private double lastPY = 100;
+    double speed;
+    
 
     public Passive(double x, double y, double vert, Color color) {
         super(x, y, vert, color);
         lastPX = x;
         lastPY = y;
+        minWalkDist = 4;
     }
 
     public Passive(double x, double y, double vert, Color color, String imageName) {
         super(x, y, vert, color, imageName);
+        minWalkDist = 4;
     }
 
 
@@ -36,8 +38,8 @@ public class Passive extends Objekt {
         if (!scared) { //normal operating
             if (reached) {
                 findTarget();
-                System.out.println("new target: " + target[0] + "," + target[1]);
-                System.out.println("position: " + getX() + "," + getY());
+               // System.out.println("new target: " + target[0] + "," + target[1]);
+              //  System.out.println("position: " + getX() + "," + getY());
                 reached = false;
             } else {
                 dx = -(getX() - target[0]);
@@ -46,18 +48,19 @@ public class Passive extends Objekt {
 
             if ((target[0] - getX()) < threshold && (target[1] - getY()) < threshold) {
                 reached = true;
-                System.out.println("on target!");
+               // System.out.println("on target!");
             } else if (getX() - lastPX == 0 || getY() - lastPY == 0.0) {
                 reached = true; //not reached but time to find new place
-                System.out.println("wall");
+                //System.out.println("wall");
             }
+            speed = .25;//walking speed
         } else {//scared
-
+            speed = 1.5;//running speed
         }
 
 
         double mag = Math.sqrt(dx * dx + dy * dy);
-        double speed = .25;//walking speed
+
 
 
         if (mag != 0) {
@@ -81,20 +84,11 @@ public class Passive extends Objekt {
 
     }
 
-    void findTarget() {
-        double size = 10; //size of bounding box
-        target[0] = (Math.random() * 2 * size - size);
-        target[1] = (Math.random() * 2 * size - size); // random + or -
-        if (((target[0] - getX()) * (target[0] - getX()) + (target[1] - getY()) * (target[1] - getY()) < minTargetDist) ||
-                (!Util.canMoveTo(this, target[0], target[1]))) { //or out of bounds
-            findTarget();
-        }
 
-
-    }
 
     void run() { //run away
 
     }
+
 
 }
