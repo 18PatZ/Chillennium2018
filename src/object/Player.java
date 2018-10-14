@@ -131,8 +131,8 @@ public class Player extends Objekt implements Collidable, Moveable {
 
                 if(magg <= 0.1) {
                    // target
-                    Screen.getInstance().markForDestruction(target); // BITE
                     Screen.getInstance().addToQue(new Enemy(target.getX(),target.getY(),0,Color.RED,"liz.png"));
+                    Screen.getInstance().markForDestruction(target); // BITE
                     target = null;
                 }
             }

@@ -125,14 +125,14 @@ private double[] runWhere(){
     double avx,avy;
     
     //finding average location of all enemies within field of view:
-   List<Objekt> pairs = new ArrayList<>();
-        for (Moveable p1 : Screen.getInstance().getMoveables()) {
-            if (p1 instanceof Enemy || (p1 instanceof Player && ((Player) p1).isWolf())) {
-                Objekt enemy = (Objekt) p1;
-                if (Math.abs(enemy.getX() - getX()) < fov && Math.abs(enemy.getY() - getY()) < fov) {
-                    sumx += enemy.getX();
-                    sumy += enemy.getY();
-                    enemies += 1;
+    List<Objekt> pairs = new ArrayList<>();
+                for(Moveable p1 : Screen.getInstance().getMoveables()){
+                    if(p1 instanceof Enemy){
+                        Objekt enemy = (Objekt)p1;
+                            if(Math.abs(enemy.getX()-getX())<fov && Math.abs(enemy.getY()-getY())<fov){
+                                sumx += enemy.getX();
+                                sumy += enemy.getY();
+                                enemies +=1;
                                 //scared = true;
                             }
                         }
