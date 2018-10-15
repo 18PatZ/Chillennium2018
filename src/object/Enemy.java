@@ -21,10 +21,6 @@ import util.Util;
  */
 public class Enemy extends NPC {
 
-
-    @Getter
-    @Setter
-    private double health;
     private double lastDX = 1;
     private double lastDY = 0;
     private double lastPX;
@@ -32,6 +28,7 @@ public class Enemy extends NPC {
     @Getter
     @Setter
     private double damageDone = 100.0/180;
+    private double damageDonePlayer = 100.0/6000;
 
     private RImage imageNorm;
     private RImage imageFlipped;
@@ -42,7 +39,7 @@ public class Enemy extends NPC {
     private double threshold = 0.1;
     @Getter
     @Setter
-    double runSpeed = 1.3;
+    double runSpeed = 0.8;
     @Getter
     @Setter
     double walkSpeed = 0.3;
@@ -51,15 +48,13 @@ public class Enemy extends NPC {
     
     private List<RImage> walking = new ArrayList<>();
 
-
-
     public Enemy(double x, double y, double vert, Color color, int health) {
         super(x, y, vert, color, health);
         minWalkDist = 4;
         lastPX = getX();
         lastPY = getY();
-        walking.add(new RImage("wolfie1.png",80));
-        walking.add(new RImage("wolfie2.png",80));       
+        walking.add(new RImage("wolfieDark1.png",80));
+        walking.add(new RImage("wolfieDark2.png",80));
     }
 
     public Enemy(double x, double y, double vert, Color color, String imageName, int health) {
@@ -69,8 +64,8 @@ public class Enemy extends NPC {
         lastPX = getX();
         lastPY = getY();
         Screen.getInstance().getSound().howl();
-        walking.add(new RImage("wolfie1.png",80));
-        walking.add(new RImage("wolfie2.png",80));    
+        walking.add(new RImage("wolfieDark1.png",80));
+        walking.add(new RImage("wolfieDark2.png",80));
         //imageFlipped = new RImage("troll_flipped.png", 50);
     }
 
@@ -100,7 +95,7 @@ public class Enemy extends NPC {
         //chasing test
         victim = runWhere();
         if (victim != null) {
-            System.out.println("pursuing");
+//            System.out.println("pursuing");
             pursuing = true;
             target[0] = (victim.getX()) + (Math.random() / 10);
             target[1] = (victim.getY()) - (Math.random() / 10);
@@ -131,7 +126,7 @@ public class Enemy extends NPC {
                 ((Living) victim).doDamage(damageDone);
 
             } else if (victim instanceof Player) {//hurt player
-                ((Living) victim).doDamage(damageDone);
+                ((Living) victim).doDamage(damageDonePlayer );
             }
             victim = null; //if already killled
             pursuing = false;

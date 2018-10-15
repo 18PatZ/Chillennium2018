@@ -9,7 +9,7 @@ package util;
  *
  * @author start
  */
-import java.io.File;
+
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -20,15 +20,27 @@ public class Sound
     private boolean running = false;
     private Thread thread;
     private boolean playSong = false;
-    Media boom = new Media(new File("sound/boom.mp3").toURI().toString());
-    Media ow = new Media(new File("sound/ow.mp3").toURI().toString());
-    Media hitwolf = new Media(new File("sound/hitwolf.mp3").toURI().toString());
-    Media howl = new Media(new File("sound/howl.mp3").toURI().toString());
-    Media oof = new Media(new File("sound/oof.mp3").toURI().toString());
+//    Media boom = new Media(new File("sound/boom.mp3").toURI().toString());
+    Media boom;
+    Media ow;
+    Media hitwolf;
+    Media howl;
+    Media oof;
+//    Media ow = new Media(new File("sound/ow.mp3").toURI().toString());
+//    Media hitwolf = new Media(new File("sound/hitwolf.mp3").toURI().toString());
+//    Media howl = new Media(new File("sound/howl.mp3").toURI().toString());
+//    Media oof = new Media(new File("sound/oof.mp3").toURI().toString());
     
     public Sound()
     {
-        
+        ow = new Media(getResource("ow.mp3"));
+        hitwolf = new Media(getResource("hitwolf.mp3"));
+        howl = new Media(getResource("howl.mp3"));
+        oof = new Media(getResource("oof.mp3"));
+    }
+
+    private String getResource(String name){
+        return Util.getFile(name);
     }
 
 

@@ -127,4 +127,8 @@ public class Util {
 
         return true;
     }
+
+    public static String getFile(String name){
+        return Util.class.getResource("/" + name).toExternalForm();
+    }
 }

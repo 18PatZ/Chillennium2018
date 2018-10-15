@@ -41,6 +41,7 @@ public class LevelManager {
         // GAME OVER
         gameOver = true;
         System.out.println("GAME OVER");
+        Screen.getInstance().markForDestruction(Player.getInstance());
     }
 
     public void endWave(){
@@ -55,14 +56,14 @@ public class LevelManager {
         if(currentWave != null)
             currentWave.tick();
 
-        if(nextWaveTick != -1 && tick >= nextWaveTick)
+        if(nextWaveTick != -1 && tick >= nextWaveTick && !gameOver)
             nextWave();
 
         if(needSpawn > 0 && tick % 10 == 0){
             if(Math.random() < 0.25)
-                Screen.getInstance().addToQue(new Armed(-4,1,0,Color.RED, "person2.png", LevelManager.getInstance().getPlayeStartHealth()));
+                Screen.getInstance().addToQue(new Armed(-4,1,0,Color.GOLDENROD, "person2.png", LevelManager.getInstance().getPlayeStartHealth()));
             else
-                Screen.getInstance().addToQue(new Passive(-4,1,0, Color.GREEN, "person2.png",defaultPassiveHealth));
+                Screen.getInstance().addToQue(new Passive(-4,1,0, Color.YELLOW, "person2.png", defaultPassiveHealth));
             needSpawn--;
         }
 

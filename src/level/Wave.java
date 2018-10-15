@@ -1,6 +1,7 @@
 package level;
 
 import collision.Moveable;
+import javafx.scene.paint.Color;
 import lombok.Getter;
 import main.Screen;
 import object.Enemy;
@@ -41,7 +42,7 @@ public class Wave {
 
         for (Passive passive : turn) {
             Screen.getInstance().markForDestruction(passive);
-            Enemy enemy = new Enemy(passive.getX(), passive.getY(), passive.getVertical(), passive.color, "liz.png", LevelManager.getInstance().getDefaultEnemyHealth());
+            Enemy enemy = new Enemy(passive.getX(), passive.getY(), passive.getVertical(), Color.RED, "liz.png", LevelManager.getInstance().getDefaultEnemyHealth());
             Screen.getInstance().getAddQueue().add(enemy);
         }
 

@@ -37,7 +37,6 @@ public class Player extends Living implements Collidable {
     @Getter @Setter private boolean isWolf = false;
     @Getter @Setter private double aiStrength = 0.82;
 
-
     public Player(double x, double y, double vert, Color color, int health){
         super(x, y, vert, color,health);
     }
@@ -48,10 +47,10 @@ public class Player extends Living implements Collidable {
         for(int i = 1; i <= 4; i++)
             walking.add(new RImage("luna" + i + ".png", 80));
         
-        walkingWolf.add(new RImage("wolfie1.png",80));
-        walkingWolf.add(new RImage("wolfie2.png",80));
+        walkingWolf.add(new RImage("wolfieMed1.png",80));
+        walkingWolf.add(new RImage("wolfieMed2.png",80));
         imgStand = new RImage("luna_standing.png", 80);
-        standingWolf = new RImage("wolfie1.png",80);
+        standingWolf = new RImage("wolfieMed1.png",80);
 
         image = imgStand;
 
@@ -130,11 +129,13 @@ public class Player extends Living implements Collidable {
 
                 if(magg <= 0.1) {
                    // target
-                    Screen.getInstance().markForDestruction(target); // BITE
-                    Screen.getInstance().addToQue(new Enemy(target.getX(),target.getY(),0,Color.RED,"liz.png",LevelManager.getInstance().getDefaultEnemyHealth()));
-                    LevelManager.getInstance().getCurrentWave().decHumans();
-                    LevelManager.getInstance().getCurrentWave().incWolf();
-                    target = null;
+//                    Screen.getInstance().markForDestruction(target); // BITE
+//                    Screen.getInstance().addToQue(new Enemy(target.getX(),target.getY(),0,Color.RED,"liz.png",LevelManager.getInstance().getDefaultEnemyHealth()));
+//                    LevelManager.getInstance().getCurrentWave().decHumans();
+//                    LevelManager.getInstance().getCurrentWave().incWolf();
+                    target.doDamage(100.0/40.0);
+                    if(target.getHealth() <= 0)
+                        target = null;
                 }
             }
         }
@@ -199,6 +200,7 @@ public class Player extends Living implements Collidable {
             Projectile proj = new Projectile(getX(), getY(), 0, getVertical(), Color.INDIANRED, 5);
             proj.setVelX(0.2 * lastDX);
             proj.setVelY(0.2 * lastDY);
+            proj.setDamage(5);
             Screen.getInstance().getAddQueue().add(proj);
         }
 
@@ -240,12 +242,17 @@ public class Player extends Living implements Collidable {
     }
 
     @Override
-    public Hitbox getHitbox() {
-        return hitbox;
-    }
-    @Override
     public void onHit(){
         Screen.getInstance().getSound().oof();
     }
-    
+
+    @Override
+    public Hitbox getHitbox() {
+        return hitbox;
+    }
+
+    @Override
+    public void die() {
+        LevelManager.getInstance().endGame();
+    }
 }

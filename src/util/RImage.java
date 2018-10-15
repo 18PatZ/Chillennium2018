@@ -13,7 +13,7 @@ public class RImage {
     private double height;
 
     public RImage(String imageName, double reqWidth){
-        String s = new File("images/" + imageName).toURI().toString();
+        String s = Util.getFile("" + imageName);
         image = new Image(s);
         width = reqWidth;
         height = image.getHeight() / image.getWidth() * reqWidth;

@@ -12,7 +12,7 @@ import util.Util;
 /**
  * @author start
  */
-abstract class NPC extends Living {
+public abstract class NPC extends Living {
     double[] target = new double[2];
     double minWalkDist;
     private double lastDX;

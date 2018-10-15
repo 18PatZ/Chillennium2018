@@ -23,7 +23,7 @@ public class Passive extends NPC {
     private double lastPY = 100;
     @Getter
     @Setter
-    double runSpeed = 1.3;
+    double runSpeed = 0.7;
     @Getter
     @Setter
     double walkSpeed = 0.3;
@@ -40,15 +40,17 @@ public class Passive extends NPC {
         lastPX = x;
         lastPY = y;
         minWalkDist = 4;
+        String s = Math.random() < 0.5 ? "gene" : "genmale";
         for(int i = 1; i <= 4; i++)
-            walking.add(new RImage("genmale" + i + ".png", 80));
+            walking.add(new RImage(s + i + ".png", 80));
     }
 
     public Passive(double x, double y, double vert, Color color, String imageName, int health) {
         super(x, y, vert, color, imageName, health);
         minWalkDist = 4;
+        String s = Math.random() < 0.5 ? "gene" : "genmale";
         for(int i = 1; i <= 4; i++)
-            walking.add(new RImage("genmale" + i + ".png", 80));
+            walking.add(new RImage(s + i + ".png", 80));
     }
 
 
@@ -83,9 +85,9 @@ animTick ++;
 //
 //            
         double[] go = runWhere();
-        System.out.println("runwhere: " + go[0] + "," + go[1]);
+//        System.out.println("runwhere: " + go[0] + "," + go[1]);
         if (!(go[0] == 1000) && !(go[1] == 1000)) {
-            System.out.println("scared");
+//            System.out.println("scared");
 //                 System.out.println("");
             scared = true;
 //                //introducing some randomness
@@ -182,7 +184,7 @@ animTick ++;
                 LevelManager.getInstance().getCurrentWave().decHumans();
             }
 
-            System.out.println("destroying victim");
+//            System.out.println("destroying victim");
         }
     }
     @Override

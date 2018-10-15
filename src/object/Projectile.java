@@ -2,7 +2,6 @@ package object;
 
 import collision.Moveable;
 import javafx.scene.paint.Color;
-import level.LevelManager;
 import lombok.Getter;
 import lombok.Setter;
 import main.Screen;
@@ -18,6 +17,7 @@ public class Projectile extends Objekt implements Moveable {
     private double init;
     protected double bounceHeight = 0.6;
     protected boolean killOnRebound = false;
+    private double damage = 10;
 
     public Projectile(double x, double y, double vert, double init, Color color, double life) {
         super(x, y, vert, color);
@@ -61,13 +61,16 @@ public class Projectile extends Objekt implements Moveable {
         setVertical(init + bounceHeight * (1 - (System.currentTimeMillis() - start) / life) * Math.sin((System.currentTimeMillis() - start) * Math.PI * 2 / 180));
 
         for (Moveable moveable : Screen.getInstance().getMoveables()) {
-            if(moveable instanceof Enemy){
-                Enemy e = (Enemy) moveable;
-                if(Math.abs(e.getX() - getX()) <= 0.1 && Math.abs(e.getY() - getY()) <= 0.1){
+            if(moveable instanceof Enemy || (moveable instanceof Player && ((Player) moveable).isWolf())){
+                Living e = (Living) moveable;
+                if(Math.abs(e.getX() - getX()) <= 0.2 && Math.abs(e.getY() - getY()) <= 0.2){
 //                    Screen.getInstance().markForDestruction(e);
 //                    if(LevelManager.getInstance().getCurrentWave() != null)
 //                        LevelManager.getInstance().getCurrentWave().decWolf();
-                    e.doDamage(25);
+                    if(e instanceof Player)
+                        e.doDamage(damage / 10);
+                    else
+                        e.doDamage(damage);
                 }
             }
         }

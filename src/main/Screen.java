@@ -19,7 +19,9 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import level.LevelManager;
 import lombok.Getter;
+import lombok.Setter;
 import object.*;
+import util.Cooldown;
 import util.POPair;
 import util.Util;
 import util.Sound;
@@ -60,6 +62,12 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
     private int fps = 0;
     private int borderTick= 0;
 
+    private Cooldown cool = new Cooldown();
+
+    @Getter @Setter private boolean paused = false;
+
+    private List<Image> cutscenes = new ArrayList<>();
+
 
     public void set(){
         add(new StaticObject(-4.2, 0, 2, "cowS.png", 200));
@@ -80,14 +88,15 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
                     add(new StaticObject(-8 - j * 2, 4 + 4 * i, 0, "shelves.png", 400, 0.6, 3));
 
         for (int i = 0; i < 15; i++)
-            add(new Passive(-4, 1, 0,Color.GREEN, "person2.png", 100));
+            add(new Passive(-4, 1, 0,Color.YELLOW, "person2.png", 100));
 
         for (int i = 0; i < 5; i++)
-            add(new Armed(-4,1,0,Color.RED, "person2.png", LevelManager.getInstance().getPlayeStartHealth()));
+            add(new Armed(-4,1,0,Color.GOLDENROD, "person2.png", LevelManager.getInstance().getPlayeStartHealth()));
 
         add(new Player(2, 2, 0, Color.CADETBLUE, "troll.png", 0.5, 0.5, LevelManager.getInstance().getPlayeStartHealth()));
 
-        new Image(new File("images/liz.png").toURI().toString());
+        new Image(Util.getFile("wolfie1.png"));
+        new Image(Util.getFile("wolfie2.png"));
         
         sound = new Sound();
         //playing sound
@@ -112,14 +121,16 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
     double ox = -14;
     double oy = -39;
 
+    private int cutsceneMode = 0;
+
     @Override
     public void start(Stage stage) {
 
         new LevelManager();
 
-        background = new Image(new File("images/background_fixed.png").toURI().toString());
-        border = new Image(new File("images/border2.png").toURI().toString());
-        borderRed = new Image(new File("images/border2Red.png").toURI().toString());
+        background = new Image(Util.getFile("background_fixed.png"));
+        border = new Image(Util.getFile("border2.png"));
+        borderRed = new Image(Util.getFile("border2Red.png"));
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize(); // get screen size wrapper
         width = (int)dim.getWidth();
@@ -163,19 +174,68 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 //        ox = 1548.2506003549065 - pp.getX();
 //        oy = pp.getY() - 205;
 
+//        cs1 = new Image(new File("images/cutscene1.png").toURI().toString());
+//        cs2 = new Image(new File("images/cutscene2.png").toURI().toString());
+        cutscenes.add(new Image(Util.getFile("title.png")));
+        cutscenes.add(new Image(Util.getFile("cutscene1.png")));
+        cutscenes.add(new Image(Util.getFile("cutscene2.png")));
+
         new AnimationTimer(){
 
             @Override
             public void handle(long arg) {
 
-                tick++;
+                if(Screen.getInstance().isPressed("ENTER") && cool.expired("NEXT", 0.5))
+                    cutsceneMode++;
 
-                lines = new ArrayList<>();
+                if(cutsceneMode < cutscenes.size()){
+                    context.drawImage(cutscenes.get(cutsceneMode), 0, 0, width, height);
+                    context.setFill(Color.BLACK);
+                    context.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 28));
+                    context.fillText("PRESS ENTER TO CONTINUE", 20, 50);
+                }
+                else {
 
-                context.setFill(Color.WHITESMOKE);
-                context.fillRect(0, 0, width, height);
+                    if (!paused)
+                        tick();
 
-                List<Line> lines = new ArrayList<>();
+                }
+
+            }
+
+        }.start();
+
+    }
+
+    private void tick(){
+        if(Screen.getInstance().isPressed("ENTER") && cool.expired("RESET", 0.5)){
+            System.out.println("RESETTING");
+
+            objekts.clear();
+            moveables.clear();
+            destroyQueue.clear();
+            addQueue.clear();
+            lastTime = System.currentTimeMillis();
+            tick = 0;
+            borderTick = 0;
+            new LevelManager();
+
+            set();
+
+            return;
+        }
+
+        if(Screen.getInstance().isPressed("P") && cool.expired("P", 0.5))
+            paused = !paused;
+
+        tick++;
+
+        lines = new ArrayList<>();
+
+        context.setFill(Color.WHITESMOKE);
+        context.fillRect(0, 0, width, height);
+
+        List<Line> lines = new ArrayList<>();
 
 //                if(isPressed("U"))
 //                    ox++;
@@ -185,77 +245,77 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 //                    oy++;
 //                if(isPressed("I"))
 //                    oy--;
-                if(isPressed("O")){
-                    ox = 111;
-                    oy = -14;
-                    targetOffset.x-=100;
-                }
+        if(isPressed("O")){
+            ox = 111;
+            oy = -14;
+            targetOffset.x-=100;
+        }
 //                System.out.println(ox + " " + oy);
-                context.drawImage(background, offset.x + ox, offset.y + oy, 1920 * 1.5, 1920/1.7320875438 * 1.5);
-                
-                if(tick % 5 == 0)
-                    fps = (int) (1.0 / (System.currentTimeMillis() - lastTime) * 1000);
+        context.drawImage(background, offset.x + ox, offset.y + oy, 1920 * 1.5, 1920/1.7320875438 * 1.5);
 
-                lastTime = System.currentTimeMillis();
+        if(tick % 5 == 0)
+            fps = (int) (1.0 / (System.currentTimeMillis() - lastTime) * 1000);
 
-                // grid stuff
+        lastTime = System.currentTimeMillis();
 
-                if(true) {
+        // grid stuff
 
-                    Color lCol = new Color(0.65, 0.65, 0.65, 1);
+        if(true) {
 
-                    for(int i = 1; i <= 40; i++){
+            Color lCol = new Color(0.65, 0.65, 0.65, 1);
 
-                        double[][] points = new double[][]{
-                                {-20, 10},
-                                {0, 0},
-                                {i, i},
-                        };
+            for(int i = 1; i <= 40; i++){
 
-                        double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(yaw), 0), points);
+                double[][] points = new double[][]{
+                        {-20, 10},
+                        {0, 0},
+                        {i, i},
+                };
 
-                        double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(pitch), 0, 0),
-                                Util.translate(rot, 0, 0, 0));
+                double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(yaw), 0), points);
 
-                        fin = Util.getDisplayed(fin);
+                double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(pitch), 0, 0),
+                        Util.translate(rot, 0, 0, 0));
 
-                        Line line = new Line(Point3D.fromArray(fin[0]), Point3D.fromArray(fin[1]));
-                        line.color = lCol;
-                        lines.add(line);
-                    }
+                fin = Util.getDisplayed(fin);
 
-                    for(int i = -20; i < 10; i++){
+                Line line = new Line(Point3D.fromArray(fin[0]), Point3D.fromArray(fin[1]));
+                line.color = lCol;
+                lines.add(line);
+            }
 
-                        double[][] points = new double[][]{
-                                {-40, 0},
-                                {0, 0},
-                                {i, i},
-                        };
+            for(int i = -20; i < 10; i++){
 
-                        double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(yaw + 90), 0), points);
+                double[][] points = new double[][]{
+                        {-40, 0},
+                        {0, 0},
+                        {i, i},
+                };
 
-                        double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(pitch), 0, 0),
-                                Util.translate(rot, 0, 0, 0));
+                double[][] rot = Util.mult(Util.rotationMatrix(0, Math.toRadians(yaw + 90), 0), points);
 
-                        fin = Util.getDisplayed(fin);
+                double[][] fin = Util.mult(Util.rotationMatrix(Math.toRadians(pitch), 0, 0),
+                        Util.translate(rot, 0, 0, 0));
 
-                        Line line = new Line(Point3D.fromArray(fin[0]), Point3D.fromArray(fin[1]));
-                        line.color = lCol;
-                        lines.add(line);
-                    }
-                }
+                fin = Util.getDisplayed(fin);
 
-                // end grid
+                Line line = new Line(Point3D.fromArray(fin[0]), Point3D.fromArray(fin[1]));
+                line.color = lCol;
+                lines.add(line);
+            }
+        }
 
-                lines.add(makeLine(p(0, 0, 0), p(1, 0, 0), Color.RED));
-                lines.add(makeLine(p(0, 0, 0), p(0, 0, 1), Color.GREEN));
+        // end grid
 
-                Color col = Color.LIGHTGRAY;
-                lines.add(makeLine(p(-9, 0, 16), p(10, 0, 16), col));
-                lines.add(makeLine(p(-9, 0, 0), p(-9, 0, 16), col));
+        lines.add(makeLine(p(0, 0, 0), p(1, 0, 0), Color.RED));
+        lines.add(makeLine(p(0, 0, 0), p(0, 0, 1), Color.GREEN));
 
-                lines.add(makeLine(p(-9, 0, 0), p(10, 0, 0), Color.rgb(90, 45, 15)));
-                lines.add(makeLine(p(10, 0, 0), p(10, 0, 16), Color.rgb(90, 45, 15)));
+        Color col = Color.LIGHTGRAY;
+        lines.add(makeLine(p(-9, 0, 16), p(10, 0, 16), col));
+        lines.add(makeLine(p(-9, 0, 0), p(-9, 0, 16), col));
+
+        lines.add(makeLine(p(-9, 0, 0), p(10, 0, 0), Color.rgb(90, 45, 15)));
+        lines.add(makeLine(p(10, 0, 0), p(10, 0, 16), Color.rgb(90, 45, 15)));
 
 //                lines.add(makeLine(p(-5, 0, -5), p(-5, 2, -5), Color.BLUE));
 //                lines.add(makeLine(p(-5, 0, 5), p(-5, 2, 5), Color.BLUE));
@@ -267,108 +327,132 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 //                lines.add(makeLine(p(5, 2, -5), p(5, 2, 5), Color.BLUE));
 //                lines.add(makeLine(p(-5, 2, -5), p(-5, 2, 5), Color.BLUE));
 
-                lines.forEach(l -> {
+        lines.forEach(l -> {
 
-                    context.setFill(l.color);
+            context.setFill(l.color);
 
-                    double p1 = width / 2.0 + l.p1.x + offset.x;
-                    double p1y = height / 2.0 - l.p1.y + offset.y;
+            double p1 = width / 2.0 + l.p1.x + offset.x;
+            double p1y = height / 2.0 - l.p1.y + offset.y;
 
-                    double p2 = width / 2.0 + l.p2.x + offset.x;
-                    double p2y = height / 2.0 - l.p2.y + offset.y;
+            double p2 = width / 2.0 + l.p2.x + offset.x;
+            double p2y = height / 2.0 - l.p2.y + offset.y;
 
-                    double angle = Util.getAngle(p2 - p1, p2y - p1y) - 90;
+            double angle = Util.getAngle(p2 - p1, p2y - p1y) - 90;
 
-                    context.save();
-                    context.rotate(angle);
+            context.save();
+            context.rotate(angle);
 
-                    double[] p1r = Util.rotate(p1, p1y, angle);
+            double[] p1r = Util.rotate(p1, p1y, angle);
 
-                    double mag = Util.dist(p1, p1y, p2, p2y);
+            double mag = Util.dist(p1, p1y, p2, p2y);
 
-                    context.fillRect(p1r[0], p1r[1] - 2, mag, l.color.equals(Color.rgb(90, 45, 15)) ? 8 : 4);
+            context.fillRect(p1r[0], p1r[1] - 2, mag, l.color.equals(Color.rgb(90, 45, 15)) ? 8 : 4);
 
-                    context.restore();
+            context.restore();
 
-                });
+        });
 
 //                List<POPair> pairs = new ArrayList<>();
-                List<Objekt> pairs = new ArrayList<>();
+        List<Objekt> pairs = new ArrayList<>();
 
-                objekts.forEach(o -> {
+        objekts.forEach(o -> {
 
-                    o.tick();
+            o.tick();
 
 //                    Point3D point = Util.getPointOnScreen(o.center);
 //                    pairs.add(POPair.builder().object(o).screenPoint(point).build());
-                    if(!(o instanceof Moveable))
-                        pairs.add(o);
+            if(!(o instanceof Moveable))
+                pairs.add(o);
 
-                });
+        });
 
-                for(Moveable p1 : moveables){
-                    Objekt player = (Objekt) p1;
-                    for(int j = 0; j <= pairs.size(); j++) {
-                        if(j == pairs.size()) {
-                            pairs.add(player);
-                            break;
-                        }
-                        else {
-                            Objekt p = pairs.get(j);
-                            if (!(p instanceof Moveable) && player.center.getX() > p.center.getX() && player.center.getZ() < p.center.getZ()) {
-                                pairs.add(j, player);
-                                break;
-                            }
-                        }
+        for(Moveable p1 : moveables){
+            Objekt player = (Objekt) p1;
+            for(int j = 0; j <= pairs.size(); j++) {
+                if(j == pairs.size()) {
+                    pairs.add(player);
+                    break;
+                }
+                else {
+                    Objekt p = pairs.get(j);
+                    if (!(p instanceof Moveable) && player.center.getX() > p.center.getX() && player.center.getZ() < p.center.getZ()) {
+                        pairs.add(j, player);
+                        break;
                     }
                 }
+            }
+        }
 
 //                Collections.sort(pairs);
 
-                pairs.forEach(p -> {
+        pairs.forEach(p -> {
 
 //                    Objekt o = p.getObject();
 //                    Point3D point = p.getScreenPoint();
-                    Objekt o = p;
-                    Point3D point = Util.getPointOnScreen(o.center);
+            Objekt o = p;
+            Point3D point = Util.getPointOnScreen(o.center);
 
-                    context.setFill(o.color);
-                    context.fillRoundRect(point.x - 10, point.y - 10, 20, 20, 20, 20);
-
-                    if(o.image != null) {
-                        if(!o.flipped)
-                            context.drawImage(o.image.getImage(), point.x - o.image.getWidth() / 2, point.y - o.image.getHeight(), o.image.getWidth(), o.image.getHeight());
-                        else
-                            context.drawImage(o.image.getImage(), point.x + o.image.getWidth() / 2, point.y - o.image.getHeight(), -o.image.getWidth(), o.image.getHeight());
+            if(o instanceof NPC && o.getLastScreenPoint() != null) {
+                boolean flip = !(point.getX() >= o.getLastScreenPoint().getX());
+                if(flip != o.flipped){
+                    if(System.currentTimeMillis() >= o.lastFlip + 250){
+                        o.flipped = flip;
+                        o.lastFlip = System.currentTimeMillis();
                     }
+                }
+            }
+            o.setLastScreenPoint(point);
 
-                    o.postTick(point);
+            context.setFill(o.color);
+            if(o instanceof Projectile)
+                context.fillRoundRect(point.x - 6, point.y - 6, 12, 12, 12, 12);
+//                    else
+//                        context.fillRoundRect(point.x - 10, point.y - 10, 20, 20, 20, 20);
 
-                });
+            if(o.image != null) {
+                if(!o.flipped)
+                    context.drawImage(o.image.getImage(), point.x - o.image.getWidth() / 2, point.y - o.image.getHeight(), o.image.getWidth(), o.image.getHeight());
+                else
+                    context.drawImage(o.image.getImage(), point.x + o.image.getWidth() / 2, point.y - o.image.getHeight(), -o.image.getWidth(), o.image.getHeight());
+            }
 
-                if(tick == 360)
-                    LevelManager.getInstance().nextWave();
+            if(o instanceof Living){
+                Living l = (Living) o;
 
-                objekts.removeAll(destroyQueue);
-                moveables.removeAll(destroyQueue);
-                destroyQueue.clear();
+                context.setFill(Color.GRAY);
+                context.fillRect(point.x - 40, point.y + 10, 80, 5);
 
-                addQueue.forEach(Screen.this::add);
-                addQueue.clear();
+                context.setFill(o.color);
+                context.fillRect(point.x - 40, point.y + 10, l.getHealth() / l.getMaxHealth() * 80, 5);
+            }
 
-                double damp = 7.0;
-                offset.x += (targetOffset.x - offset.x) / damp;
-                offset.y += (targetOffset.y - offset.y) / damp;
+            o.postTick(point);
 
-                double sp = 360.0 / 240;
-                if(isPressed("LEFT"))
-                    yaw += sp;
-                if(isPressed("RIGHT"))
-                    yaw -= sp;
-                if(isPressed("UP"))
-                    pitch += sp;
-                if(isPressed("DOWN"))
-                    pitch -= sp;
+        });
+
+        if(tick == 360)
+            LevelManager.getInstance().nextWave();
+
+        objekts.removeAll(destroyQueue);
+        moveables.removeAll(destroyQueue);
+        destroyQueue.clear();
+
+        addQueue.forEach(Screen.this::add);
+        addQueue.clear();
+
+        double damp = 7.0;
+        offset.x += (targetOffset.x - offset.x) / damp;
+        offset.y += (targetOffset.y - offset.y) / damp;
+
+        double sp = 360.0 / 240;
+        if(isPressed("LEFT"))
+            yaw += sp;
+        if(isPressed("RIGHT"))
+            yaw -= sp;
+        if(isPressed("UP"))
+            pitch += sp;
+        if(isPressed("DOWN"))
+            pitch -= sp;
 
 //                if(tick % 360 <= 60get
 //                    yaw += 360.0 / 60.0;
@@ -376,51 +460,56 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 //                if(tick % 360 - 180 >= 0 && tick % 360 - 180 <= 60)
 //                    pitch += 360.0 / 60.0;
 
-                // border image
-                if(Player.getInstance().isWolf()){
-                    //sound
-                    if(borderTick == 1)
-                        sound.boom();
+        // border image
+        if(Player.getInstance().isWolf()){
+            //sound
+            if(borderTick == 1)
+                sound.boom();
 
-                    if(borderTick < 60)
-                        borderTick++;
+            if(borderTick < 60)
+                borderTick++;
 
-                    context.setGlobalAlpha(((double)borderTick)/70);
-                    context.drawImage(border, 0, 0, width, height);
-                    context.setGlobalAlpha(1);
+            context.setGlobalAlpha(((double)borderTick)/70);
+            context.drawImage(border, 0, 0, width, height);
+            context.setGlobalAlpha(1);
 
-                }
-                if(!Player.getInstance().isWolf()){
-                    if(borderTick>1){
-                        context.setGlobalAlpha(((double)borderTick)/70);
-                        context.drawImage(border, 0, 0,width,height);
-                        context.setGlobalAlpha(1);
-                        borderTick--;
-                    }
-
-                }
-
-                context.setGlobalAlpha(0.8);
-                context.drawImage(borderRed, 0, 0, width, height);
+        }
+        if(!Player.getInstance().isWolf()){
+            if(borderTick>1){
+                context.setGlobalAlpha(((double)borderTick)/70);
+                context.drawImage(border, 0, 0,width,height);
                 context.setGlobalAlpha(1);
-
-                LevelManager.getInstance().tick();
-
-                Screen.getInstance().getContext().setFill(Color.GRAY);
-                Screen.getInstance().getContext().setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 24));
-                Screen.getInstance().getContext().fillText("FPS: " + fps, 40, 40);
-                Screen.getInstance().getContext().fillText("Wolf: " + Player.getInstance().isWolf(), 40, 60);
-                Screen.getInstance().getContext().fillText("Wave #" + LevelManager.getInstance().getWaveNumber(), 40, 80);
-                Screen.getInstance().getContext().fillText("Game over: " + LevelManager.getInstance().isGameOver(), 40, 100);
-                if(LevelManager.getInstance().getCurrentWave() != null){
-                    Screen.getInstance().getContext().fillText("Humans: " + LevelManager.getInstance().getCurrentWave().getNumHumans(), 40, 120);
-                    Screen.getInstance().getContext().fillText("Wolves: " + LevelManager.getInstance().getCurrentWave().getNumWolves(), 40, 140);
-                }
-
+                borderTick--;
             }
+        }
 
-        }.start();
+        if(LevelManager.getInstance().isGameOver())
+            context.setGlobalAlpha(1);
+        else
+            context.setGlobalAlpha(1 - Player.getInstance().getHealth() / 100);
+        context.drawImage(borderRed, 0, 0, width, height);
+        context.setGlobalAlpha(1);
 
+        LevelManager.getInstance().tick();
+
+        Screen.getInstance().getContext().setFill(Color.GRAY);
+        Screen.getInstance().getContext().setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 24));
+        Screen.getInstance().getContext().fillText("FPS: " + fps, 40, 40);
+        Screen.getInstance().getContext().fillText("Wave " + LevelManager.getInstance().getWaveNumber(), 40, 70);
+        if(LevelManager.getInstance().getCurrentWave() != null){
+            Screen.getInstance().getContext().fillText("Humans: " + LevelManager.getInstance().getCurrentWave().getNumHumans(), 40, 100);
+            Screen.getInstance().getContext().fillText("Wolves: " + LevelManager.getInstance().getCurrentWave().getNumWolves(), 40, 130);
+        }
+        Screen.getInstance().getContext().fillText("HEALTH " + (int)Player.getInstance().getHealth(), 40, 160);
+
+        if(LevelManager.getInstance().isGameOver()){
+            Screen.getInstance().getContext().setFill(Color.WHITESMOKE);
+            context.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 54));
+            context.fillText("GAME OVER", width / 2.0, height / 2.0);
+
+            context.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 28));
+            context.fillText("Press <ENTER> to restart.", width / 2.0, height / 2.0 + 50);
+        }
     }
 
     private double[] p(double... d){
