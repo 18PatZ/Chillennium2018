@@ -33,6 +33,7 @@ public class Sound
     
     public Sound()
     {
+        boom = new Media(getResource("boom.mp3"));
         ow = new Media(getResource("ow.mp3"));
         hitwolf = new Media(getResource("hitwolf.mp3"));
         howl = new Media(getResource("howl.mp3"));

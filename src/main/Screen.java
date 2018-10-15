@@ -66,11 +66,14 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
     @Getter @Setter private boolean paused = false;
 
+    private boolean credits = false;
+    private Image creditsI;
+
     private List<Image> cutscenes = new ArrayList<>();
 
 
     public void set(){
-        add(new StaticObject(-4.2, 0, 2, "cowS.png", 200));
+        add(new StaticObject(4.2, 0, 1, "cowS.png", 200));
 //        add(new StaticObject(2, 4, 0, "cubeT.png", 156, 1, 1));
 
         for(int i = 0; i < 10; i++)
@@ -180,6 +183,8 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
         cutscenes.add(new Image(Util.getFile("cutscene1.png")));
         cutscenes.add(new Image(Util.getFile("cutscene2.png")));
 
+        creditsI = new Image(Util.getFile("credits.png"));
+
         new AnimationTimer(){
 
             @Override
@@ -190,13 +195,41 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
                 if(cutsceneMode < cutscenes.size()){
                     context.drawImage(cutscenes.get(cutsceneMode), 0, 0, width, height);
-                    context.setFill(Color.BLACK);
-                    context.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 28));
-                    context.fillText("PRESS ENTER TO CONTINUE", 20, 50);
+                    if(cutsceneMode > 0) {
+                        context.setFill(Color.BLACK);
+                        context.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 28));
+                        context.fillText("PRESS ENTER TO CONTINUE", 20, 50);
+                    }
                 }
                 else {
 
-                    if (!paused)
+                    if(Screen.getInstance().isPressed("BACK_SPACE") && cool.expired("CREDITS", 0.5))
+                        credits = true;
+
+                    if(Screen.getInstance().isPressed("ENTER") && cool.expired("RESET", 0.5)){
+                        System.out.println("RESETTING");
+
+                        objekts.clear();
+                        moveables.clear();
+                        destroyQueue.clear();
+                        addQueue.clear();
+                        lastTime = System.currentTimeMillis();
+                        tick = 0;
+                        borderTick = 0;
+                        new LevelManager();
+
+                        set();
+
+                        credits = false;
+                        paused = false;
+                    }
+                    else if(credits){
+                        context.drawImage(creditsI, 0, 0, width, height);
+                        context.setFill(Color.SADDLEBROWN);
+                        context.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 28));
+                        context.fillText("PRESS ENTER TO RESTART", 20, 40);
+                    }
+                    else if (!paused)
                         tick();
 
                 }
@@ -208,23 +241,6 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
     }
 
     private void tick(){
-        if(Screen.getInstance().isPressed("ENTER") && cool.expired("RESET", 0.5)){
-            System.out.println("RESETTING");
-
-            objekts.clear();
-            moveables.clear();
-            destroyQueue.clear();
-            addQueue.clear();
-            lastTime = System.currentTimeMillis();
-            tick = 0;
-            borderTick = 0;
-            new LevelManager();
-
-            set();
-
-            return;
-        }
-
         if(Screen.getInstance().isPressed("P") && cool.expired("P", 0.5))
             paused = !paused;
 
@@ -454,11 +470,11 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
         if(isPressed("DOWN"))
             pitch -= sp;
 
-//                if(tick % 360 <= 60get
-//                    yaw += 360.0 / 60.0;
+//        if(tick % 360 <= 60)
+//            yaw += 360.0 / 60.0;
 //
-//                if(tick % 360 - 180 >= 0 && tick % 360 - 180 <= 60)
-//                    pitch += 360.0 / 60.0;
+//        if(tick % 360 - 180 >= 0 && tick % 360 - 180 <= 60)
+//            pitch += 360.0 / 60.0;
 
         // border image
         if(Player.getInstance().isWolf()){
@@ -509,6 +525,7 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
 
             context.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 28));
             context.fillText("Press <ENTER> to restart.", width / 2.0, height / 2.0 + 50);
+            context.fillText("Press <DELETE> for credits.", width / 2.0, height / 2.0 + 80);
         }
     }
 
@@ -549,6 +566,8 @@ public class Screen extends Application implements EventHandler<KeyEvent> {
      */
     @Override
     public void handle(KeyEvent event) {
+
+//        System.out.println(event.getCode().toString());
 
         if(event.getCode().getName().equals("Esc"))
             System.exit(0);
