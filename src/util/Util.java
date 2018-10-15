@@ -107,6 +107,16 @@ public class Util {
         return getPointOnScreen(point.x, point.y, point.z);
     }
 
+    public static double[] calcCollision(Objekt obj, double x, double y, double dx, double dy){
+        if(canMoveTo(obj, x + dx, y + dy))
+            return new double[]{x + dx, y + dy};
+        if(canMoveTo(obj, x + dx, y))
+            return new double[]{x + dx, y};
+        if(canMoveTo(obj, x, y + dy))
+            return new double[]{x, y + dy};
+        return null;
+    }
+
     public static boolean canMoveTo(Objekt obj, double nx, double ny){
         if(!LevelManager.getInstance().getCurrentLevel().getHitbox().isInside(nx, ny)) return false;
 
@@ -116,5 +126,9 @@ public class Util {
                 return false;
 
         return true;
+    }
+
+    public static String getFile(String name){
+        return Util.class.getResource("/" + name).toExternalForm();
     }
 }

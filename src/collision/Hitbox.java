@@ -11,19 +11,28 @@ public class Hitbox {
     private double y;
     private double width;  // along y
     private double length; // along x
+    private double height;
 
-    public Hitbox(double x, double y, double length, double width){
+    public Hitbox(double x, double y, double length, double width, double height){
         this.x = x;
         this.y = y;
         this.length = length;
         this.width = width;
     }
 
+    public Hitbox(double x, double y, double length, double width){
+        this(x, y, length, width, 0);
+    }
+
     public boolean isInside(Point3D point){
-        return isInside(point.x, point.z);
+        return isInside(point.x, point.z, point.y);
+    }
+
+    public boolean isInside(double px, double py, double v){
+        return (px >= x && px <= x + length) && (py <= y && py >= y - width) && v <= height;
     }
 
     public boolean isInside(double px, double py){
-        return (px >= x && px <= x + length) && (py <= y && py >= y - width);
+        return isInside(px, py, 0);
     }
 }

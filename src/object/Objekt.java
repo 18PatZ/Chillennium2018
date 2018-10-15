@@ -2,6 +2,8 @@ package object;
 
 import geometry.Point3D;
 import javafx.scene.paint.Color;
+import lombok.Getter;
+import lombok.Setter;
 import util.RImage;
 
 public abstract class Objekt {
@@ -9,6 +11,11 @@ public abstract class Objekt {
     public Point3D center;
     public Color color;
     public RImage image;
+    public boolean flipped = false;
+    public long lastFlip = 0;
+
+    @Getter @Setter private Point3D lastScreenPoint;
+
 
     public Objekt(double x, double y, double vert, Color color){
         this.center = new Point3D(x, vert, y);
